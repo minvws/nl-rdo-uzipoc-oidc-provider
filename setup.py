@@ -33,7 +33,8 @@ setup(
             "coverage-badge",
             "pytest",
             "types-requests",
-            "types-redis"
+            "types-redis",
+            "types-jwcrypto",
         ]
     },
 )

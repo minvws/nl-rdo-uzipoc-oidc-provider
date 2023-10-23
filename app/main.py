@@ -2,7 +2,6 @@ import logging
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError
 from starlette.staticfiles import StaticFiles
 
 from app.dependencies import config

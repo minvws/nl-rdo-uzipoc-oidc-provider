@@ -1,1 +1,8 @@
-Auto-generated README for nl-rdo-uzipoc-oidc-provider
+# setup
+```bash
+make setup
+```
+# run
+```bash
+make run
+```

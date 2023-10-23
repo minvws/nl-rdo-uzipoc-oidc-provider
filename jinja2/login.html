@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Home</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="static/login.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="center">
+          <h1>Zorg Specifieke Login</h1>
+          <form action="/submit" method="GET">
+              <div class="txt_field">
+                  <input type="text" value="900020108" name="uziNumber" placeholder="123456789" required>
+                  <span></span>
+                  <label>UZI nummer</label>
+              </div>
+              <input hidden type="text" name="state" value="{{state}}"/>
+              <input name="submit" type="Submit" value="Login">
+              <div class="signup_link">
+<!--                  Not a Member ? <a href="signup.php">Signup</a>-->
+              </div>
+          </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+services:
+  redis:
+    image: redis:7.0.4
+    restart: 'no'
+    ports:
+      - '6381:6379'

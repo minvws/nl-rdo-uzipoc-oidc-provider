@@ -36,7 +36,6 @@ class OidcService:
                 "state": session_key,
             },
         )
-        # return HTMLResponse(file_content_raise_if_none("static/login.html"))
 
     def submit(
         self,

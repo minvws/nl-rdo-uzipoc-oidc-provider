@@ -15,7 +15,9 @@ templates = Jinja2Templates(directory="jinja2")
 
 
 class OidcService:
-    def __init__(self, redis_client: Redis, jwt_service: JwtService, register_base_url: str):
+    def __init__(
+        self, redis_client: Redis, jwt_service: JwtService, register_base_url: str
+    ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
         self._register_base_url = register_base_url

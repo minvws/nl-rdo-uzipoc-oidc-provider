@@ -19,7 +19,6 @@ jwt_crt_content = file_content_raise_if_none(config.get("app", "jwt_crt_path"))
 _redis_client = create_redis_client(config["redis"])
 
 
-
 ####
 ## Services
 ####
@@ -31,5 +30,5 @@ jwt_service_ = JwtService(
 oidc_service_ = OidcService(
     redis_client=_redis_client,
     jwt_service=jwt_service_,
-    register_base_url=register_base_url
+    register_base_url=register_base_url,
 )

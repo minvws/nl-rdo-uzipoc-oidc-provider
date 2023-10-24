@@ -15,9 +15,10 @@ templates = Jinja2Templates(directory="jinja2")
 
 
 class OidcService:
-    def __init__(self, redis_client: Redis, jwt_service: JwtService):
+    def __init__(self, redis_client: Redis, jwt_service: JwtService, register_base_url: str):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
+        self._register_base_url = register_base_url
 
     def authorize(
         self,
@@ -48,10 +49,11 @@ class OidcService:
         authorize_state = json.loads(authorize_state.decode("utf-8"))
 
         resp = requests.get(
-            "http://localhost:8002/signed-uzi?uzi_number=" + uzi_number, timeout=30
+            self._register_base_url + "/signed-uzi?uzi_number=" + uzi_number, timeout=30
         )
         if resp.status_code != 200:
             raise RuntimeError("Unable to fetch uzi number")
+        ## TODO: Update to JWE
         userinfo = self._jwt_service.create_jwt(
             {"signed_uzi_number": resp.json()["signed_uzi_number"]}
         )

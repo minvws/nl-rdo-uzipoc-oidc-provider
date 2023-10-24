@@ -1,8 +1,9 @@
 [app]
-base_url = http://localhost:8003
 jwt_priv_key_path = secrets/nl-rdo-uzipoc-oidc-provider.key
 jwt_pub_key_path = secrets/nl-rdo-uzipoc-oidc-provider.pub
 jwt_crt_path = secrets/nl-rdo-uzipoc-oidc-provider.crt
+
+register_base_url = http://localhost:8002
 
 [uvicorn]
 # The host to be running on

@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi import Form
-from fastapi.responses import Response
+from fastapi.responses import Response, JSONResponse
 
 from app.dependencies import oidc_service_
 
 from app.services.oidc_service import OidcService
+
+import requests
 
 router = APIRouter()
 
@@ -42,3 +44,7 @@ async def userinfo(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     return oidc_service.userinfo(request)
+
+@router.get("/hello")
+async def hello(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:
+    return oidc_service.get_oidc_provider_wellknown_config('https://accounts.google.com/.well-known/openid-configuration')

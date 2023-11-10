@@ -90,3 +90,7 @@ class OidcService:
         access_token = request.headers["Authorization"].split(" ")[1]
         userinfo = self._redis_client.get("userinfo_" + access_token)
         return Response(content=userinfo, media_type="application/jwt")
+    
+    def get_oidc_provider_wellknown_config(self, url: str) -> JSONResponse:
+        response = requests.get(url).json()
+        return JSONResponse(response)

@@ -1,3 +1,5 @@
+# mypy: disallow_untyped_defs=False
+
 import unittest
 from _typeshed import Incomplete
 from jwcrypto import jwe as jwe, jwk as jwk, jws as jws

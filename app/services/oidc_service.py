@@ -27,7 +27,7 @@ class OidcService:
         request: Request,
         redirect_uri: str,
         state: str,
-    ):
+    ) -> Response:
         session_key = rand_pass(100)
         authorize_state = {"redirect_uri": redirect_uri, "state": state}
         self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
@@ -44,7 +44,7 @@ class OidcService:
         self,
         uzi_number: str,
         state: str,
-    ):
+    ) -> Response:
         authorize_state = self._redis_client.get("authorize_" + state)
         if authorize_state is None:
             raise RuntimeError("Invalid state")
@@ -72,7 +72,7 @@ class OidcService:
         )
         return RedirectResponse(redirect_url)
 
-    def token(self, code: str):
+    def token(self, code: str) -> Response:
         access_token = self._redis_client.get("access_token_" + code)
         if access_token is None:
             raise RuntimeError("Invalid code")
@@ -86,7 +86,7 @@ class OidcService:
             }
         )
 
-    def userinfo(self, request: Request):
+    def userinfo(self, request: Request) -> Response:
         access_token = request.headers["Authorization"].split(" ")[1]
         userinfo = self._redis_client.get("userinfo_" + access_token)
         return Response(content=userinfo, media_type="application/jwt")

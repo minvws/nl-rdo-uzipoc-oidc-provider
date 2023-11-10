@@ -1,3 +1,5 @@
+# mypy: disallow_untyped_defs=False
+
 from _typeshed import Incomplete
 from jwcrypto.common import JWException as JWException, JWKeyNotFound as JWKeyNotFound, json_decode as json_decode, json_encode as json_encode
 from jwcrypto.jwe import JWE as JWE

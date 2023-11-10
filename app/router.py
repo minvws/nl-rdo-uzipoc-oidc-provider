@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi import Form
+from fastapi.responses import Response
 
 from app.dependencies import oidc_service_
 
@@ -14,7 +15,7 @@ async def authorize(
     redirect_uri: str,
     state: str,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
-):
+) -> Response:
     return oidc_service.authorize(request, redirect_uri, state)
 
 
@@ -23,7 +24,7 @@ async def submit(
     uzi_number: str,
     state: str,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
-):
+) -> Response:
     return oidc_service.submit(uzi_number, state)
 
 
@@ -31,7 +32,7 @@ async def submit(
 async def token(
     code: str = Form(...),
     oidc_service: OidcService = Depends(lambda: oidc_service_),
-):
+) -> Response:
     return oidc_service.token(code)
 
 
@@ -39,5 +40,5 @@ async def token(
 async def userinfo(
     request: Request,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
-):
+) -> Response:
     return oidc_service.userinfo(request)

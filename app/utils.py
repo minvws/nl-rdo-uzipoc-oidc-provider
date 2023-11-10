@@ -33,5 +33,5 @@ def kid_from_certificate(certificate: str) -> str:
     return base64.b64encode(sha.digest()).decode("utf-8")
 
 
-def rand_pass(size):
+def rand_pass(size: int) -> str:
     return secrets.token_urlsafe(size)

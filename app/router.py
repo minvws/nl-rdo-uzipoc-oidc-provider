@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from fastapi import Form
-from fastapi.responses import Response, JSONResponse
+from fastapi.responses import Response
 
 from app.dependencies import oidc_service_
 
@@ -45,6 +45,11 @@ async def userinfo(
 ) -> Response:
     return oidc_service.userinfo(request)
 
-@router.get("/hello")
+
+@router.get("/providers/all")
+async def get_providers_list(oidc_service: OidcService = Depends(lambda: oidc_service_)):
+    return oidc_service.get_providers()
+
+@router.get("/providers/all/.well-known/openid-configuration")
 async def hello(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:
-    return oidc_service.get_oidc_provider_wellknown_config('https://accounts.google.com/.well-known/openid-configuration')
+    return oidc_service.get_all_providers_well_known_openid_config()

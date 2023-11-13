@@ -1,0 +1,4 @@
+{
+    "google": "https://accounts.google.com/.well-known/openid-configuration",
+    "uzi-poc": "https://accounts.google.com/.well-known/openid-configuration"
+}

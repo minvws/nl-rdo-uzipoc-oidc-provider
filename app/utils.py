@@ -1,10 +1,11 @@
 import base64
 import secrets
 from os import path
-from typing import Union
+from typing import Union, Dict
 from Cryptodome.Hash import SHA256
 from Cryptodome.IO import PEM
 from jwcrypto.jwk import JWK
+import json
 
 
 def load_jwk(filepath: str) -> JWK:
@@ -35,3 +36,8 @@ def kid_from_certificate(certificate: str) -> str:
 
 def rand_pass(size: int) -> str:
     return secrets.token_urlsafe(size)
+
+def providers_from_json(filepath: str) -> Dict[str, str]:
+    with open(filepath, "r") as file:
+        providers = json.load(file)
+        return providers

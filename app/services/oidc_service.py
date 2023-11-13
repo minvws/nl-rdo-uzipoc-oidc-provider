@@ -18,8 +18,11 @@ templates = Jinja2Templates(directory="jinja2")
 
 class OidcService:
     def __init__(
-        self, redis_client: Redis, jwt_service: JwtService, register_base_url: str, 
-        oidc_providers: Dict[str, str]
+        self,
+        redis_client: Redis,
+        jwt_service: JwtService,
+        register_base_url: str,
+        oidc_providers: Dict[str, str],
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
@@ -94,20 +97,20 @@ class OidcService:
         access_token = request.headers["Authorization"].split(" ")[1]
         userinfo = self._redis_client.get("userinfo_" + access_token)
         return Response(content=userinfo, media_type="application/jwt")
-    
-    def get_providers(self,):
+
+    def get_providers(
+        self,
+    ):
         return JSONResponse(self._oidc_providers)
-    
+
     def get_all_providers_well_known_openid_config(self):
         openid_config = {}
         for key, value in self._oidc_providers.items():
             data = self._get_oidc_provider_wellknown_config(value)
             openid_config[key] = data
-        
+
         return JSONResponse(openid_config)
 
-
-    
     def _get_oidc_provider_wellknown_config(self, url: str):
         well_known_config = requests.get(url).json()
         return well_known_config

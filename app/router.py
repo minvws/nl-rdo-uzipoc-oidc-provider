@@ -47,8 +47,11 @@ async def userinfo(
 
 
 @router.get("/providers/all")
-async def get_providers_list(oidc_service: OidcService = Depends(lambda: oidc_service_)):
+async def get_providers_list(
+    oidc_service: OidcService = Depends(lambda: oidc_service_),
+):
     return oidc_service.get_providers()
+
 
 @router.get("/providers/all/.well-known/openid-configuration")
 async def hello(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:

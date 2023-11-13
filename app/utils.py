@@ -37,7 +37,8 @@ def kid_from_certificate(certificate: str) -> str:
 def rand_pass(size: int) -> str:
     return secrets.token_urlsafe(size)
 
+
 def providers_from_json(filepath: str) -> Dict[str, str]:
+    # TODO: add error handling and make this function more generic
     with open(filepath, "r") as file:
-        providers = json.load(file)
-        return providers
+        return json.load(file)

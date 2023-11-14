@@ -103,14 +103,18 @@ class OidcService:
     ):
         return JSONResponse(self._oidc_providers)
 
-    def get_all_providers_well_known_openid_config(self):
+    async def get_all_providers_well_known_openid_config(self):
         openid_config = {}
-        for key, value in self._oidc_providers.items():
-            data = self._get_oidc_provider_wellknown_config(value)
-            openid_config[key] = data
+        for provider, url in self._oidc_providers.items():
+            data = await self._get_oidc_provider_wellknown_config(url)
+            # async with httpx.AsyncClient() as client:
+            #     response = await client.get(url)
+            #     data = response.json()
+
+            openid_config[provider] = data
 
         return JSONResponse(openid_config)
 
-    def _get_oidc_provider_wellknown_config(self, url: str):
-        well_known_config = requests.get(url).json()
+    async def _get_oidc_provider_wellknown_config(self, url: str):
+        well_known_config = requests.get(url, verify=False).json()
         return well_known_config

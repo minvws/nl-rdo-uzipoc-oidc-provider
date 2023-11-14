@@ -6,8 +6,6 @@ from app.dependencies import oidc_service_
 
 from app.services.oidc_service import OidcService
 
-import requests
-
 router = APIRouter()
 
 
@@ -55,4 +53,5 @@ async def get_providers_list(
 
 @router.get("/providers/all/.well-known/openid-configuration")
 async def get_all_providers_config(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:
-    return oidc_service.get_all_providers_well_known_openid_config()
+    config = await oidc_service.get_all_providers_well_known_openid_config()
+    return config

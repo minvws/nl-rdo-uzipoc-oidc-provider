@@ -44,14 +44,24 @@ async def userinfo(
     return oidc_service.userinfo(request)
 
 
-@router.get("/providers/all")
-async def get_providers_list(
-    oidc_service: OidcService = Depends(lambda: oidc_service_),
+@router.get("/.well-known/openid-configuration")
+async def get_openid_well_known_config(
+    oidc_service_: OidcService = Depends(lambda: oidc_service_),
 ):
-    return oidc_service.get_providers()
+    return oidc_service_.get_well_known_openid_config()
+
+@router.get("/jwks")
+async def get_jwks_keys(oidc_service_: OidcService = Depends(lambda: oidc_service_)):
+    return oidc_service_.get_jwks()
+
+# @router.get("/providers/all")
+# async def get_providers_list(
+#     oidc_service: OidcService = Depends(lambda: oidc_service_),
+# ):
+#     return oidc_service.get_providers()
 
 
-@router.get("/providers/all/.well-known/openid-configuration")
-async def get_all_providers_config(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:
-    config = await oidc_service.get_all_providers_well_known_openid_config()
-    return config
+# @router.get("/providers/all/.well-known/openid-configuration")
+# async def get_all_providers_config(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:
+#     config = await oidc_service.get_all_providers_well_known_openid_config()
+#     return config

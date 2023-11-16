@@ -10,18 +10,19 @@
     <div class="container">
       <div class="center">
           <h1>Zorg Specifieke Login</h1>
-          <form action="/submit" method="GET">
+          <form action="" id="form">
               <div class="txt_field">
-                  <input type="text" value="900020108" name="uzi_number" placeholder="123456789" required>
+                  <input type="text" value="900020108" name="uziId" id="uziId" placeholder="123456789" required>
                   <span></span>
                   <label>UZI nummer</label>
               </div>
-              <input hidden type="text" name="state" value="{{state}}"/>
+              <input hidden type="text" name="state" id="state" value="{{state}}"/>
               <input name="submit" type="Submit" value="Login">
               <div class="signup_link">
               </div>
           </form>
       </div>
     </div>
+    <script src="static/login.js"></script>
   </body>
 </html>

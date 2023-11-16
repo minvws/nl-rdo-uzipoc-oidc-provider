@@ -70,7 +70,7 @@ class OidcService:
             + "?"
             + urlencode({"state": authorize_state["state"], "code": code})
         )
-        return RedirectResponse(redirect_url)
+        return Response(json.dumps({"redirect_url": redirect_url}))
 
     def token(self, code: str) -> Response:
         access_token = self._redis_client.get("access_token_" + code)

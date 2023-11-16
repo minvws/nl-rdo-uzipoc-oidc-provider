@@ -5,7 +5,7 @@ from fastapi import Request
 
 import requests
 from redis import Redis
-from starlette.responses import RedirectResponse, JSONResponse, Response
+from starlette.responses import JSONResponse, Response
 from starlette.templating import Jinja2Templates
 
 from app.services.jwt_service import JwtService

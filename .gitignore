@@ -8,4 +8,5 @@ __pycache__
 *.srl
 *.pyc
 *.json
+*.idea/
 secrets/

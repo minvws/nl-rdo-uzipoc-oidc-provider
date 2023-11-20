@@ -2,10 +2,10 @@ import base64
 import secrets
 from os import path
 from typing import Union, Dict
+import json
 from Cryptodome.Hash import SHA256
 from Cryptodome.IO import PEM
 from jwcrypto.jwk import JWK
-import json
 
 
 def load_jwk(filepath: str) -> JWK:
@@ -40,5 +40,5 @@ def rand_pass(size: int) -> str:
 
 def providers_from_json(filepath: str) -> Dict[str, str]:
     # TODO: add error handling and make this function more generic
-    with open(filepath, "r") as file:
+    with open(filepath, "r", encoding="utf-8") as file:
         return json.load(file)

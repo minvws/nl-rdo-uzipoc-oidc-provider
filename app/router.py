@@ -56,5 +56,7 @@ async def get_openid_well_known_config(
 
 
 @router.get("/jwks")
-async def get_jwks_keys(oidc_service: OidcService = Depends(lambda: oidc_service_)) -> Response:
+async def get_jwks_keys(
+    oidc_service: OidcService = Depends(lambda: oidc_service_),
+) -> Response:
     return oidc_service.get_jwks()

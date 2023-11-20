@@ -5,7 +5,7 @@ from fastapi import Request
 
 import requests
 from redis import Redis
-from starlette.responses import RedirectResponse, JSONResponse, Response
+from starlette.responses import JSONResponse, Response
 from starlette.templating import Jinja2Templates
 
 from app.services.jwt_service import JwtService
@@ -77,7 +77,7 @@ class OidcService:
             + "?"
             + urlencode({"state": authorize_state["state"], "code": code})
         )
-        return RedirectResponse(redirect_url)
+        return Response(json.dumps({"redirect_url": redirect_url}))
 
     def token(self, code: str) -> Response:
         access_token = self._redis_client.get("access_token_" + code)

@@ -19,13 +19,17 @@ async def authorize(
     return oidc_service.authorize(request, redirect_uri, state)
 
 
-@router.get("/submit")
+@router.post("/submit")
 async def submit(
-    uzi_number: str,
-    state: str,
+    request: Request,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
-    return oidc_service.submit(uzi_number, state)
+    posted = await request.json()
+    if "uzi_id" not in posted or "state" not in posted:
+        return Response(status_code=400)
+    uzi_id = posted["uzi_id"]
+    state = posted["state"]
+    return oidc_service.submit(uzi_id, state)
 
 
 @router.post("/token")

@@ -39,6 +39,7 @@ def rand_pass(size: int) -> str:
 
 
 def providers_from_json(filepath: str) -> Dict[str, str]:
-    # TODO: add error handling and make this function more generic
+    if not path.exists(filepath):
+        raise FileNotFoundError(f"file {filepath} not found")
     with open(filepath, "r", encoding="utf-8") as file:
         return json.load(file)

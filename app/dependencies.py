@@ -6,8 +6,7 @@ from app.storage.redis.redis_client import create_redis_client
 from app.utils import (
     load_jwk,
     file_content_raise_if_none,
-    kid_from_certificate,
-    providers_from_json,
+    kid_from_certificate
 )
 
 config = ConfigParser()
@@ -21,7 +20,6 @@ jwt_crt_content = file_content_raise_if_none(config.get("app", "jwt_crt_path"))
 
 _redis_client = create_redis_client(config["redis"])
 
-_oidc_providers = providers_from_json("providers.json")
 
 ####
 ## Services
@@ -35,5 +33,4 @@ oidc_service_ = OidcService(
     redis_client=_redis_client,
     jwt_service=jwt_service_,
     register_base_url=register_base_url,
-    oidc_providers=_oidc_providers,
 )

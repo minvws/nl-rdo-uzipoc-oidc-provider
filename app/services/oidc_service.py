@@ -1,5 +1,6 @@
 import json
 import secrets
+from typing import Dict
 from urllib.parse import urlencode
 from fastapi import Request
 
@@ -16,22 +17,38 @@ templates = Jinja2Templates(directory="jinja2")
 
 class OidcService:
     def __init__(
-        self, redis_client: Redis, jwt_service: JwtService, register_base_url: str
+        self,
+        redis_client: Redis,
+        jwt_service: JwtService,
+        register_base_url: str,
+        identities: Dict[str, str]
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
         self._register_base_url = register_base_url
+        self._idientities = identities
 
     def authorize(
         self,
         request: Request,
         redirect_uri: str,
         state: str,
+        scope: str
     ) -> Response:
+        scopes = scope.split(" ")
         session_key = rand_pass(100)
         authorize_state = {"redirect_uri": redirect_uri, "state": state}
-        self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
 
+        self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
+        if "identities" in scopes:
+            return templates.TemplateResponse(
+                "identities.html",
+                {
+                    "request": request,
+                    "state": session_key,
+                    "identities": self._idientities,
+                },
+            )
         return templates.TemplateResponse(
             "login.html",
             {

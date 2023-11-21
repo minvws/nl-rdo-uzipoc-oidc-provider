@@ -14,9 +14,10 @@ async def authorize(
     request: Request,
     redirect_uri: str,
     state: str,
+    scope: str,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
-    return oidc_service.authorize(request, redirect_uri, state)
+    return oidc_service.authorize(request, redirect_uri, state, scope)
 
 
 @router.post("/submit")

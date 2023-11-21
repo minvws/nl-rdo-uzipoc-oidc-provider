@@ -39,5 +39,5 @@ oidc_service_ = OidcService(
     jwt_service=jwt_service_,
     register_base_url=register_base_url,
     identities=identities,
-    mock_jwks=json_from_file(mock_jwks_path)
+    mock_jwks=json_from_file(mock_jwks_path),
 )

@@ -1,14 +1,18 @@
 (function(){
     addEventListener("submit", (event) => {
         try{
-            let uziId = document.getElementById("uziId").value
-            let state = document.getElementById("state").value
+            let body = {}
+            for (let i = 0; i < event.target.elements.length; i++) {
+                if (event.target.elements[i].name !== "submit"){
+                    body[event.target.elements[i].name] = event.target.elements[i].value
+                }
+            }
             let response = fetch("/submit", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({uzi_id: uziId, state: state})
+                body: JSON.stringify(body)
             })
             response.then(async (response) => {
                 if (response.status === 200) {

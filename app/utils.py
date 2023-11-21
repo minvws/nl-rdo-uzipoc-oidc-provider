@@ -1,6 +1,7 @@
 import base64
 import secrets
 from os import path
+from typing import Union, Any
 from typing import Union, Dict
 import json
 from Cryptodome.Hash import SHA256
@@ -43,3 +44,7 @@ def providers_from_json(filepath: str) -> Dict[str, str]:
         raise FileNotFoundError(f"file {filepath} not found")
     with open(filepath, "r", encoding="utf-8") as file:
         return json.load(file)
+
+
+def json_from_file(filepath: str) -> Any:
+    return json.loads(file_content_raise_if_none(filepath))

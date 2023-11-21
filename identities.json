@@ -1,0 +1,22 @@
+[
+  {
+    "name": "René van Laar",
+    "description": "Werkt bij 'De Ziekenboeg' als cardioloog",
+    "uzi_id": "999991772"
+  },
+  {
+    "name": "Keira Smith",
+    "description": "Werkt bij 'De Ziekenboeg' als Klinisch geriater, Reumatoloog en Specialist ouderengeneeskunde",
+    "uzi_id": "900020108"
+  },
+  {
+    "name": "Anna Houtbeek",
+    "description": "Werkt bij 'Tandartspraktijk Houtbeek' als Tandarts en Orthodontist",
+    "uzi_id": "900129838"
+  },
+  {
+    "name": "Sander van der Meer",
+    "description": "Werkt bij 'Tandartspraktijk Houtbeek' als Mondhygiënist",
+    "uzi_id": "900112981"
+  }
+]

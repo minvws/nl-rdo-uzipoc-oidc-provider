@@ -1,7 +1,8 @@
 import base64
+import json
 import secrets
 from os import path
-from typing import Union
+from typing import Union, Any
 from Cryptodome.Hash import SHA256
 from Cryptodome.IO import PEM
 from jwcrypto.jwk import JWK
@@ -35,3 +36,7 @@ def kid_from_certificate(certificate: str) -> str:
 
 def rand_pass(size: int) -> str:
     return secrets.token_urlsafe(size)
+
+
+def json_from_file(filepath: str) -> Any:
+    return json.loads(file_content_raise_if_none(filepath))

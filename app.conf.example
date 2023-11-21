@@ -4,6 +4,8 @@ jwt_crt_path = secrets/nl-rdo-uzipoc-oidc-provider.crt
 
 register_base_url = http://localhost:8002
 
+identities_path = identities.json
+
 [uvicorn]
 # The host to be running on
 host = 0.0.0.0

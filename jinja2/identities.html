@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ ura_name }} - Inlogmethode selecteren</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="static/css/identities.css" rel="stylesheet">
+    <link href="static/css/manon-mint-green.css" rel="stylesheet">
+</head>
+<body>
+<main class="sidemenu">
+    <nav aria-label="Zijbalknavigatie">
+        <h1>
+            Inloggen met een testidentiteit
+        </h1>
+        <p>
+            Het UZI register van de proeftuin bevat een aantal testidentiteiten om het inloggen via UZI-Online te demonstreren.
+        </p>
+
+        <p>
+            Kies een testidentiteit om in te loggen bij De Ziekenboeg. UZI-Online zal de bijbehorende gegevens uit het UZI register ophalen en delen met De Ziekenboeg
+        </p>
+        <a>Terug naar de Proeftuin hoofdpagina</a>
+    </nav>
+    <section class="bg-color-offset auth centered">
+        <div>
+            <h1>Kies een testidentiteit</h1>
+            <div class="tiles column-2">
+                {% for identity in identities %}
+                <div role="group">
+                    <h1>{{ identity["name"] }}</h1>
+                    <p>{{ identity["description"] }}</p>
+                    <form>
+                    <input hidden type="text" value="{{ identity["uzi_id"] }}" name="uzi_id" id="{{ identity["uzi_id"] }}-name">
+                    <input hidden type="text" name="state" id="state" value="{{state}}"/>
+                    <input name="submit" type="Submit" value="Log in met deze identiteit" id="{{ identity["uzi_id"] }}-submit">
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <script src="static/login.js"></script>
+</main>
+</body>
+</html>

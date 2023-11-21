@@ -23,6 +23,8 @@ _redis_client = create_redis_client(config["redis"])
 
 identities = json_from_file(config.get("app", "identities_path"))
 
+mock_jwks_path = config.get("app", "mock_jwks_path")
+
 
 ####
 ## Services
@@ -37,4 +39,5 @@ oidc_service_ = OidcService(
     jwt_service=jwt_service_,
     register_base_url=register_base_url,
     identities=identities,
+    mock_jwks=json_from_file(mock_jwks_path)
 )

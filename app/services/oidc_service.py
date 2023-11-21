@@ -21,7 +21,7 @@ class OidcService:
         redis_client: Redis,
         jwt_service: JwtService,
         register_base_url: str,
-        identities: Dict[str, str]
+        identities: Dict[str, str],
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
@@ -29,11 +29,7 @@ class OidcService:
         self._idientities = identities
 
     def authorize(
-        self,
-        request: Request,
-        redirect_uri: str,
-        state: str,
-        scope: str
+        self, request: Request, redirect_uri: str, state: str, scope: str
     ) -> Response:
         scopes = scope.split(" ")
         session_key = rand_pass(100)

@@ -3,7 +3,12 @@ from configparser import ConfigParser
 from app.services.jwt_service import JwtService
 from app.services.oidc_service import OidcService
 from app.storage.redis.redis_client import create_redis_client
-from app.utils import load_jwk, file_content_raise_if_none, kid_from_certificate, json_from_file
+from app.utils import (
+    load_jwk,
+    file_content_raise_if_none,
+    kid_from_certificate,
+    json_from_file,
+)
 
 config = ConfigParser()
 config.read("app.conf")

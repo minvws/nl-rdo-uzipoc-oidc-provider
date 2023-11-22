@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 
 from app.services.jwt_service import JwtService
-from app.services.oidc_service import OidcService
+from pyop.provider import Provider
 from app.storage.redis.redis_client import create_redis_client
 from app.utils import (
     load_jwk,
@@ -26,6 +26,8 @@ identities = json_from_file(config.get("app", "identities_path"))
 mock_jwks_path = config.get("app", "mock_jwks_path")
 
 
+pyop_provider = Provider()
+
 ####
 ## Services
 ####
@@ -38,6 +40,7 @@ oidc_service_ = OidcService(
     redis_client=_redis_client,
     jwt_service=jwt_service_,
     register_base_url=register_base_url,
+    pyop_provider=
     identities=identities,
     mock_jwks=json_from_file(mock_jwks_path),
 )

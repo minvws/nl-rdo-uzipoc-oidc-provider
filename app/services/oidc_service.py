@@ -3,6 +3,7 @@ import secrets
 from typing import Dict
 from urllib.parse import urlencode
 from fastapi import Request
+from fastapi.encoders import jsonable_encoder
 
 import requests
 from redis import Redis
@@ -11,6 +12,8 @@ from starlette.templating import Jinja2Templates
 
 from app.services.jwt_service import JwtService
 from app.utils import rand_pass
+
+from pyop.provider import  Provider as PyOpProvider
 
 templates = Jinja2Templates(directory="jinja2")
 
@@ -22,12 +25,14 @@ class OidcService:
         jwt_service: JwtService,
         register_base_url: str,
         identities: Dict[str, str],
+        pyop_provider: PyOpProvider,
         mock_jwks: dict,
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
         self._register_base_url = register_base_url
         self._idientities = identities
+        self._pyop_provider = pyop_provider
         self._mock_jwks = mock_jwks
 
     def authorize(
@@ -107,10 +112,7 @@ class OidcService:
         return Response(content=userinfo, media_type="application/jwt")
 
     def get_jwks(self) -> JSONResponse:
-        """
-        mock jwks
-        """
-        return JSONResponse(self._mock_jwks)
+        return JSONResponse(content=jsonable_encoder(self._pyop_provider.jwks))
 
     def get_well_known_openid_config(self) -> JSONResponse:
         openid_well_known_config = {

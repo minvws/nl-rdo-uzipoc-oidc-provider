@@ -4,6 +4,7 @@
         "response_types": ["code"],
         "redirect_uris": [
             "http://localhost:8001/login/oidc/callback"
-        ]
+        ],
+        "client_public_key_path": "secrets/clients/nl-uzi-login-controller.pub"
     }
 }

@@ -44,6 +44,7 @@ sub_hash_salt = config.get("oidc", "subject_id_hash_salt")
 
 subject_id_factory = HashBasedSubjectIdentifierFactory(sub_hash_salt)
 authz_state = AuthorizationState(subject_id_factory)
+clients = json_from_file(config.get("app", "clients_path"))
 
 ####
 ## Services
@@ -63,7 +64,7 @@ pyop_provider = Provider(
         userinfo_endpoint,
         scopes_supported,
     ),
-    clients="37692967-0a74-4e91-85ec-a4250e7ad5e8",
+    clients=clients,
     authz_state=authz_state,
     userinfo=Userinfo({"_": {}}),
 )

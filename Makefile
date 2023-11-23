@@ -30,6 +30,7 @@ setup: venv app.conf setup-secrets
 
 app.conf:
 	cp app.conf.example app.conf
+	cp clients.json.example clients.json
 
 lint:
 	. .venv/bin/activate && ${env} pylint app

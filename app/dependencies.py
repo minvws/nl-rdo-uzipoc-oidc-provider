@@ -1,11 +1,11 @@
 from configparser import ConfigParser
-
-from app.services.jwt_service import JwtService
-from app.services.oidc_service import OidcService
 from pyop.provider import Provider
 from pyop.authz_state import AuthorizationState
 from pyop.subject_identifier import HashBasedSubjectIdentifierFactory
 from pyop.userinfo import Userinfo
+
+from app.services.jwt_service import JwtService
+from app.services.oidc_service import OidcService
 from app.storage.redis.redis_client import create_redis_client
 from app.utils import (
     load_jwk,
@@ -28,8 +28,6 @@ jwt_crt_content = file_content_raise_if_none(config.get("app", "jwt_crt_path"))
 _redis_client = create_redis_client(config["redis"])
 
 identities = json_from_file(config.get("app", "identities_path"))
-
-mock_jwks_path = config.get("app", "mock_jwks_path")  # to be removed
 
 # signing keys
 signing_key = config.get("secrets", "rsa_private_key")
@@ -67,7 +65,7 @@ pyop_provider = Provider(
     ),
     clients={"37692967-0a74-4e91-85ec-a4250e7ad5e8"},
     authz_state=authz_state,
-    userinfo=Userinfo({"_": {}})
+    userinfo=Userinfo({"_": {}}),
 )
 
 oidc_service_ = OidcService(
@@ -76,5 +74,4 @@ oidc_service_ = OidcService(
     register_base_url=register_base_url,
     identities=identities,
     pyop_provider=pyop_provider,
-    mock_jwks=json_from_file(mock_jwks_path),
 )

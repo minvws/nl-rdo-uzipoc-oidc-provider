@@ -6,8 +6,6 @@ register_base_url = http://localhost:8002
 
 identities_path = identities.json
 
-mock_jwks_path = mock-jwks.json
-
 [uvicorn]
 # The host to be running on
 host = 0.0.0.0

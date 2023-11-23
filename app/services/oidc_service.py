@@ -25,14 +25,12 @@ class OidcService:
         register_base_url: str,
         identities: Dict[str, str],
         pyop_provider: PyopProvider,
-        mock_jwks: dict,
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
         self._register_base_url = register_base_url
         self._identities = identities
         self._pyop_provider = pyop_provider
-        self._mock_jwks = mock_jwks
 
     def authorize(
         self, request: Request, redirect_uri: str, state: str, scope: str
@@ -114,12 +112,6 @@ class OidcService:
         return JSONResponse(content=jsonable_encoder(self._pyop_provider.jwks))
 
     def get_well_known_openid_config(self) -> JSONResponse:
-        openid_well_known_config = {
-            "issuer": "http://localhost:8003",
-            "authorize_endpoint": "http://localhost:8003/authorize",
-            "token_endpoint": "http://localhost:8003/token",
-            "userinfo_endpoint": "http://localhost:8003/userinfo",
-            "jwks_uri": "http://localhost:8003/jwks",
-            "scopes_supported": ["openid", "uzi"],
-        }
-        return JSONResponse(openid_well_known_config)
+        return JSONResponse(
+            jsonable_encoder(self._pyop_provider.configuration_information)
+        )

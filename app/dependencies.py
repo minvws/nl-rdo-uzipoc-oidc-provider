@@ -30,8 +30,8 @@ _redis_client = create_redis_client(config["redis"])
 identities = json_from_file(config.get("app", "identities_path"))
 
 # signing keys
-signing_key = config.get("secrets", "rsa_private_key")
-signing_key_cert = config.get("secrets", "rsa_private_key_crt")
+signing_key = config.get("app", "rsa_private_key")
+signing_key_cert = config.get("app", "rsa_private_key_crt")
 
 # PyOP OIDC Provider Config
 issuer = config.get("oidc", "issuer")
@@ -63,7 +63,7 @@ pyop_provider = Provider(
         userinfo_endpoint,
         scopes_supported,
     ),
-    clients={"37692967-0a74-4e91-85ec-a4250e7ad5e8"},
+    clients="37692967-0a74-4e91-85ec-a4250e7ad5e8",
     authz_state=authz_state,
     userinfo=Userinfo({"_": {}}),
 )

@@ -30,7 +30,6 @@ setup: venv app.conf setup-secrets
 
 app.conf:
 	cp app.conf.example app.conf
-	cp mock-jwks.json.example mock-jwks.json
 
 lint:
 	. .venv/bin/activate && ${env} pylint app

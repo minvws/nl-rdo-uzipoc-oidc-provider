@@ -61,3 +61,7 @@ async def get_jwks_keys(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     return oidc_service.get_jwks()
+
+@router.get("/test")
+async def test_jwe():
+    return oidc_service_.test_jwe()

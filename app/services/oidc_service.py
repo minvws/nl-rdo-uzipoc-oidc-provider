@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse, Response
 from starlette.templating import Jinja2Templates
 
 from app.services.jwt_service import JwtService
-from app.utils import rand_pass
+from app.utils import rand_pass, load_jwk
 
 templates = Jinja2Templates(directory="jinja2")
 
@@ -72,9 +72,13 @@ class OidcService:
         )
         if resp.status_code != 200:
             raise RuntimeError("Unable to fetch uzi number")
-        ## TODO: Update to JWE
-        userinfo = self._jwt_service.create_jwt(
-            {"signed_uzi_number": resp.json()["signed_uzi_number"]}
+
+        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key = load_jwk(client_public_key_path)
+
+        userinfo = self._jwt_service.create_jwe(
+            client_public_key
+            ,{"signed_uzi_number": resp.json()["signed_uzi_number"]}
         )
         access_token = secrets.token_urlsafe(96)[:64]
         self._redis_client.set("userinfo_" + access_token, userinfo)
@@ -93,7 +97,11 @@ class OidcService:
         access_token = self._redis_client.get("access_token_" + code)
         if access_token is None:
             raise RuntimeError("Invalid code")
-        id_token = self._jwt_service.create_jwt({})
+
+        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key = load_jwk(client_public_key_path)
+
+        id_token = self._jwt_service.create_jwe(client_public_key, {})
         return JSONResponse(
             {
                 "access_token": access_token.decode("utf-8"),
@@ -115,3 +123,21 @@ class OidcService:
         return JSONResponse(
             jsonable_encoder(self._pyop_provider.configuration_information)
         )
+
+    def _get_pyop_provider_client_secret_path(self) -> str:
+        # Acts like a get data from database
+        clients = self._pyop_provider.clients[0]
+        return clients["client_public_key_path"]
+
+    def test_jwe(self):
+        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key = load_jwk(client_public_key_path)
+
+
+        message = {
+            "message": "Hello World"
+        }
+
+        jwe_test = self._jwt_service.create_jwe(client_public_key, message)
+
+        return JSONResponse(jwe_test)

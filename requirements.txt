@@ -36,7 +36,7 @@ coverage==7.2.1
     #   coverage-badge
 coverage-badge==1.1.0
     # via app (setup.py)
-cryptography==41.0.3
+cryptography==41.0.5
     # via
     #   jwcrypto
     #   oic
@@ -56,7 +56,7 @@ future==0.18.3
     # via pyjwkest
 gitdb==4.0.10
     # via gitpython
-gitpython==3.1.31
+gitpython==3.1.40
     # via bandit
 h11==0.14.0
     # via uvicorn
@@ -74,12 +74,8 @@ jwcrypto==1.4.2
     # via app (setup.py)
 lazy-object-proxy==1.9.0
     # via astroid
-mako==1.3.0
-    # via oic
 markupsafe==2.1.2
-    # via
-    #   jinja2
-    #   mako
+    # via jinja2
 mccabe==0.7.0
     # via pylint
 mypy==1.1.1
@@ -88,8 +84,6 @@ mypy-extensions==1.0.0
     # via
     #   black
     #   mypy
-oic==1.6.0
-    # via pyop
 packaging==23.0
     # via
     #   black
@@ -107,22 +101,12 @@ pluggy==1.0.0
 pycparser==2.21
     # via cffi
 pycryptodomex==3.19.0
-    # via
-    #   app (setup.py)
-    #   oic
-    #   pyjwkest
-    #   pyop
+    # via app (setup.py)
 pydantic==1.10.5
-    # via
-    #   fastapi
-    #   oic
+    # via fastapi
 pyflakes==3.0.1
     # via autoflake
-pyjwkest==1.4.2
-    # via oic
 pylint==2.16.2
-    # via app (setup.py)
-pyop==3.4.1
     # via app (setup.py)
 pytest==7.2.1
     # via app (setup.py)
@@ -133,12 +117,7 @@ pyyaml==6.0.1
 redis==4.5.4
     # via app (setup.py)
 requests==2.31.0
-    # via
-    #   app (setup.py)
-    #   oic
-    #   pyjwkest
-six==1.16.0
-    # via pyjwkest
+    # via app (setup.py)
 smmap==5.0.0
     # via gitdb
 sniffio==1.3.0

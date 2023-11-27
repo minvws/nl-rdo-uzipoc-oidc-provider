@@ -77,8 +77,7 @@ class OidcService:
         client_public_key = load_jwk(client_public_key_path)
 
         userinfo = self._jwt_service.create_jwe(
-            client_public_key
-            ,{"signed_uzi_number": resp.json()["signed_uzi_number"]}
+            client_public_key, {"signed_uzi_number": resp.json()["signed_uzi_number"]}
         )
         access_token = secrets.token_urlsafe(96)[:64]
         self._redis_client.set("userinfo_" + access_token, userinfo)

@@ -128,16 +128,3 @@ class OidcService:
         # Acts like a get data from database
         clients = self._pyop_provider.clients[0]
         return clients["client_public_key_path"]
-
-    def test_jwe(self):
-        client_public_key_path = self._get_pyop_provider_client_secret_path()
-        client_public_key = load_jwk(client_public_key_path)
-
-
-        message = {
-            "message": "Hello World"
-        }
-
-        jwe_test = self._jwt_service.create_jwe(client_public_key, message)
-
-        return JSONResponse(jwe_test)

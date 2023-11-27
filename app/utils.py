@@ -6,7 +6,7 @@ import json
 from Cryptodome.Hash import SHA256
 from Cryptodome.IO import PEM
 from jwcrypto.jwk import JWK
-from jwkest.jwk import RSAKey, import_rsa_key
+from jwkest.jwk import RSAKey, import_rsa_key # type: ignore
 
 
 def load_jwk(filepath: str) -> JWK:

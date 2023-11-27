@@ -23,6 +23,7 @@ create_key_pair () {
 
 mkdir -p ./$SECRETS_DIR
 mkdir -p ./$SECRETS_DIR/oidc
+mkdir -p ./$SECRETS_DIR/jwks-certs
 
 ###
  # Create ca for local selfsigned certificates

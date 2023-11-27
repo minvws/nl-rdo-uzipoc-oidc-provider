@@ -4,7 +4,7 @@ from typing import Dict
 from urllib.parse import urlencode
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
-from pyop.provider import Provider as PyopProvider # type: ignore
+from pyop.provider import Provider as PyopProvider  # type: ignore
 
 import requests
 from redis import Redis

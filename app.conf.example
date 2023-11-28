@@ -19,7 +19,7 @@ reload = True
 workers = 1
 
 # Should we create an SSL connection through uvicorn?
-use_ssl = False
+use_ssl = True
 
 # Setting for the SSL connection when enabled, defined by the use_ssl setting.
 base_dir = secrets/ssl

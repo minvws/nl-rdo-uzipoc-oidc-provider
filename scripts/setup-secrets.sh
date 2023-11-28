@@ -23,6 +23,7 @@ create_key_pair () {
 
 mkdir -p ./$SECRETS_DIR
 mkdir -p ./$SECRETS_DIR/oidc
+mkdir -p ./$SECRETS_DIR/ssl
 mkdir -p ./$SECRETS_DIR/jwks-certs
 
 ###
@@ -34,6 +35,13 @@ if [[ ! -f $SECRETS_DIR/cacert.crt ]]; then
 	  -key $SECRETS_DIR/cacert.key \
 	  -out $SECRETS_DIR/cacert.crt \
 	  -subj "/CN=US/CN=nl-rdo-uzipoc-oidc-provider-ca"
+fi
+
+###
+# SSL certs
+###
+if [[ ! -f $SECRETS_DIR/ssl/server.crt ]]; then
+  create_key_pair $SECRETS_DIR/ssl "server" "localhost"
 fi
 
 ###

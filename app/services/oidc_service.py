@@ -87,7 +87,7 @@ class OidcService:
 
         redirect_url = (
             authorize_state["redirect_uri"]
-            + "?"
+            + "/zsm?"
             + urlencode({"state": authorize_state["state"], "code": code})
         )
         return Response(json.dumps({"redirect_url": redirect_url}))

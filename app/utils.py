@@ -35,9 +35,7 @@ def kid_from_certificate(certificate: str) -> str:
     return base64.b64encode(sha.digest()).decode("utf-8")
 
 
-def pyop_rsa_signing_key_callable(
-    signing_key_path: str, signing_key_crt_path: str
-) -> RSAKey:
+def load_rsa_key_from_path(signing_key_path: str, signing_key_crt_path: str) -> RSAKey:
     signing_key = file_content_raise_if_none(signing_key_path)
     signing_key_crt = file_content_raise_if_none(signing_key_crt_path)
     kid = kid_from_certificate(signing_key_crt)

@@ -12,7 +12,7 @@ from app.utils import (
     file_content_raise_if_none,
     kid_from_certificate,
     json_from_file,
-    pyop_rsa_signing_key_callable,
+    load_rsa_key_from_path,
     pyop_configuration_information_callable,
 )
 
@@ -55,7 +55,7 @@ jwt_service_ = JwtService(
 )
 
 pyop_provider = Provider(
-    signing_key=pyop_rsa_signing_key_callable(signing_key, signing_key_cert),
+    signing_key=load_rsa_key_from_path(signing_key, signing_key_cert),
     configuration_information=pyop_configuration_information_callable(
         issuer,
         authorization_endpoint,

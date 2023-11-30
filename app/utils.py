@@ -1,7 +1,7 @@
 import base64
 import secrets
 from os import path
-from typing import Union, Dict, Any, List
+from typing import Union, Any, List
 import json
 from Cryptodome.Hash import SHA256
 from Cryptodome.IO import PEM
@@ -70,13 +70,6 @@ def pyop_configuration_information_callable(
 
 def rand_pass(size: int) -> str:
     return secrets.token_urlsafe(size)
-
-
-def providers_from_json(filepath: str) -> Dict[str, str]:
-    if not path.exists(filepath):
-        raise FileNotFoundError(f"file {filepath} not found")
-    with open(filepath, "r", encoding="utf-8") as file:
-        return json.load(file)
 
 
 def json_from_file(filepath: str) -> Any:

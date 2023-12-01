@@ -6,6 +6,9 @@ register_base_url = http://localhost:8002
 
 identities_path = identities.json
 
+rsa_private_key = secrets/oidc/selfsigned.key
+rsa_private_key_crt = secrets/oidc/selfsigned.crt
+
 [uvicorn]
 # The host to be running on
 host = 0.0.0.0
@@ -16,7 +19,7 @@ reload = True
 workers = 1
 
 # Should we create an SSL connection through uvicorn?
-use_ssl = False
+use_ssl = True
 
 # Setting for the SSL connection when enabled, defined by the use_ssl setting.
 base_dir = secrets/ssl
@@ -33,3 +36,13 @@ ssl = False
 key =
 cert =
 cafile =
+
+[oidc]
+issuer = https://localhost:8003
+authorization_endpoint = /authorize
+token_endpoint = /token
+userinfo_endpoint = /userinfo
+jwks_uri = /jwks
+scopes_supported = openid
+response_types_supported = code
+subject_id_hash_salt = somesalt

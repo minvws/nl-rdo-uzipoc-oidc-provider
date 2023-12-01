@@ -22,6 +22,8 @@ create_key_pair () {
 }
 
 mkdir -p ./$SECRETS_DIR
+mkdir -p ./$SECRETS_DIR/oidc
+mkdir -p ./$SECRETS_DIR/ssl
 
 ###
  # Create ca for local selfsigned certificates
@@ -35,8 +37,22 @@ if [[ ! -f $SECRETS_DIR/cacert.crt ]]; then
 fi
 
 ###
+# SSL certs
+###
+if [[ ! -f $SECRETS_DIR/ssl/server.crt ]]; then
+  create_key_pair $SECRETS_DIR/ssl "server" "localhost"
+fi
+
+###
 # nl-rdo-uzipoc-oidc-provider mock cert
 ###
 if [[ ! -f $SECRETS_DIR/nl-rdo-uzipoc-oidc-provider.crt ]]; then
   create_key_pair $SECRETS_DIR "nl-rdo-uzipoc-oidc-provider" "nl-rdo-uzipoc-oidc-provider"
+fi
+
+###
+# OIDC JWT signing
+###
+if [[ ! -f $SECRETS_DIR/oidc/selfsigned.crt ]]; then
+  create_key_pair $SECRETS_DIR/oidc "selfsigned" "oidc_sign"
 fi

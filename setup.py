@@ -6,6 +6,7 @@ requirements = [
     "fastapi",
     "requests",
     "redis",
+    "pyop",
     "jinja2",
     "jwcrypto",
     "setuptools",

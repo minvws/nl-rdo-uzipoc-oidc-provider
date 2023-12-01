@@ -47,3 +47,17 @@ async def userinfo(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     return oidc_service.userinfo(request)
+
+
+@router.get("/.well-known/openid-configuration")
+async def get_openid_well_known_config(
+    oidc_service: OidcService = Depends(lambda: oidc_service_),
+) -> Response:
+    return oidc_service.get_well_known_openid_config()
+
+
+@router.get("/jwks")
+async def get_jwks_keys(
+    oidc_service: OidcService = Depends(lambda: oidc_service_),
+) -> Response:
+    return oidc_service.get_jwks()

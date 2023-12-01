@@ -21,7 +21,6 @@ run:
 setup-secrets:
 	scripts/./setup-secrets.sh
 
-
 pip-sync: ## synchronizes the .venv with the state of requirements.txt
 	. .venv/bin/activate && ${env} pip-compile --extra dev
 	. .venv/bin/activate && ${env} pip-sync
@@ -31,6 +30,7 @@ setup: venv app.conf setup-secrets
 
 app.conf:
 	cp app.conf.example app.conf
+	cp clients.json.example clients.json
 
 lint:
 	. .venv/bin/activate && ${env} pylint app

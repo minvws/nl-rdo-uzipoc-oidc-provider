@@ -39,7 +39,7 @@ authorization_endpoint = config.get("oidc", "authorization_endpoint")
 jwks_endpoint = config.get("oidc", "jwks_uri")
 token_endpoint = config.get("oidc", "token_endpoint")
 userinfo_endpoint = config.get("oidc", "userinfo_endpoint")
-scopes_supported = [config.get("oidc", "scopes_supported")]
+scopes_supported = config.get("oidc", "scopes_supported").split(" ")
 sub_hash_salt = config.get("oidc", "subject_id_hash_salt")
 
 subject_id_factory = HashBasedSubjectIdentifierFactory(sub_hash_salt)

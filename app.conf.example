@@ -9,6 +9,8 @@ identities_path = identities.json
 rsa_private_key = secrets/oidc/selfsigned.key
 rsa_private_key_crt = secrets/oidc/selfsigned.crt
 
+clients_path = clients.json
+
 [uvicorn]
 # The host to be running on
 host = 0.0.0.0
@@ -16,7 +18,7 @@ port = 8003
 
 # Are we running in debug mode? turns on auto-reload on code changes
 reload = True
-workers = 1
+workers = 11
 
 # Should we create an SSL connection through uvicorn?
 use_ssl = True

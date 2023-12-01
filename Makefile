@@ -26,10 +26,12 @@ pip-sync: ## synchronizes the .venv with the state of requirements.txt
 	. .venv/bin/activate && ${env} pip-sync
 	. .venv/bin/activate && ${env} pip install -e .
 
-setup: venv app.conf setup-secrets
+setup: venv app.conf clients.json setup-secrets
 
 app.conf:
 	cp app.conf.example app.conf
+
+clients.json:
 	cp clients.json.example clients.json
 
 lint:

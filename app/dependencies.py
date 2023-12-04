@@ -4,6 +4,7 @@ from pyop.authz_state import AuthorizationState
 from pyop.subject_identifier import HashBasedSubjectIdentifierFactory
 from pyop.userinfo import Userinfo
 
+from app.constants import authorization_endpoint, jwks_endpoint, token_endpoint, userinfo_endpoint
 from app.services.jwt_service import JwtService
 from app.services.oidc_service import OidcService
 from app.storage.redis.redis_client import create_redis_client
@@ -35,10 +36,6 @@ signing_key_cert = config.get("app", "rsa_private_key_crt")
 
 # PyOP OIDC Provider Config
 issuer = config.get("oidc", "issuer")
-authorization_endpoint = config.get("oidc", "authorization_endpoint")
-jwks_endpoint = config.get("oidc", "jwks_uri")
-token_endpoint = config.get("oidc", "token_endpoint")
-userinfo_endpoint = config.get("oidc", "userinfo_endpoint")
 scopes_supported = config.get("oidc", "scopes_supported").split(" ")
 sub_hash_salt = config.get("oidc", "subject_id_hash_salt")
 

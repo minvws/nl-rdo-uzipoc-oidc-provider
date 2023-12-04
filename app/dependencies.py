@@ -4,7 +4,12 @@ from pyop.authz_state import AuthorizationState
 from pyop.subject_identifier import HashBasedSubjectIdentifierFactory
 from pyop.userinfo import Userinfo
 
-from app.constants import authorization_endpoint, jwks_endpoint, token_endpoint, userinfo_endpoint
+from app.constants import (
+    authorization_endpoint,
+    jwks_endpoint,
+    token_endpoint,
+    userinfo_endpoint,
+)
 from app.services.jwt_service import JwtService
 from app.services.oidc_service import OidcService
 from app.storage.redis.redis_client import create_redis_client

@@ -4,7 +4,12 @@ from pyop.authz_state import AuthorizationState
 from pyop.subject_identifier import HashBasedSubjectIdentifierFactory
 from pyop.userinfo import Userinfo
 
-from app.constants import authorization_endpoint, jwks_endpoint, token_endpoint, userinfo_endpoint
+from app.constants import (
+    AUTHORIZATION_ENDPOINT,
+    JWKS_ENDPOINT,
+    TOKEN_ENDPOINT,
+    USERINFO_ENDPOINT,
+)
 from app.services.jwt_service import JwtService
 from app.services.oidc_service import OidcService
 from app.storage.redis.redis_client import create_redis_client
@@ -55,10 +60,10 @@ pyop_provider = Provider(
     signing_key=load_rsa_key_from_path(signing_key, signing_key_cert),
     configuration_information=pyop_configuration_information_callable(
         issuer,
-        authorization_endpoint,
-        jwks_endpoint,
-        token_endpoint,
-        userinfo_endpoint,
+        AUTHORIZATION_ENDPOINT,
+        JWKS_ENDPOINT,
+        TOKEN_ENDPOINT,
+        USERINFO_ENDPOINT,
         scopes_supported,
     ),
     clients=clients,

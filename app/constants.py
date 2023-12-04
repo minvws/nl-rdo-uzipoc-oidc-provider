@@ -1,4 +1,4 @@
-authorization_endpoint = "/authorize"
-jwks_endpoint = "/jwks"
-token_endpoint = "/token"
-userinfo_endpoint = "/userinfo"
+AUTHORIZATION_ENDPOINT = "/authorize"
+JWKS_ENDPOINT = "/jwks"
+TOKEN_ENDPOINT = "/token"
+USERINFO_ENDPOINT = "/userinfo"

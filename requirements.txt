@@ -60,7 +60,7 @@ gitpython==3.1.40
     # via bandit
 h11==0.14.0
     # via uvicorn
-idna==3.4
+idna==3.6
     # via
     #   anyio
     #   requests

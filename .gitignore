@@ -9,3 +9,5 @@ __pycache__
 *.pyc
 *.json
 secrets/
+!package.json
+!package-lock.json

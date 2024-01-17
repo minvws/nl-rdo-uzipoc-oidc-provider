@@ -48,3 +48,8 @@ jwks_uri = /jwks
 scopes_supported = openid identities
 response_types_supported = code
 subject_id_hash_salt = somesalt
+
+[templates]
+jinja_path = jinja2
+vite_manifest_path = static/assets/manifest.json
+identities_page_sidebar_template = identities_sidebar.html

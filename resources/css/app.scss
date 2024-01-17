@@ -1,0 +1,11 @@
+$ro-font-path: "@minvws/nl-rdo-rijksoverheid-ui-theme/fonts";
+$ro-img-path: "@minvws/nl-rdo-rijksoverheid-ui-theme/img";
+
+@import "@minvws/nl-rdo-rijksoverheid-ui-theme/scss/main";
+@import "@minvws/manon/header-content-wrapper";
+
+@import "theme/styles";
+@import "theme/sidemenu";
+@import "theme/form-button";
+@import "theme/main";
+@import "theme/logo";

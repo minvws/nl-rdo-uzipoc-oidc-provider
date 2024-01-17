@@ -1,6 +1,6 @@
 import json
 import secrets
-from typing import Dict
+from typing import Dict, Optional
 from urllib.parse import urlencode
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
@@ -9,12 +9,10 @@ from pyop.provider import Provider as PyopProvider
 import requests
 from redis import Redis
 from starlette.responses import JSONResponse, Response
-from starlette.templating import Jinja2Templates
 
 from app.services.jwt_service import JwtService
+from app.services.template_service import TemplateService
 from app.utils import rand_pass, load_jwk
-
-templates = Jinja2Templates(directory="jinja2")
 
 
 class OidcService:
@@ -25,12 +23,16 @@ class OidcService:
         register_base_url: str,
         identities: Dict[str, str],
         pyop_provider: PyopProvider,
+        template_service: TemplateService,
+        identities_page_sidebar_template: Optional[str],
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
         self._register_base_url = register_base_url
         self._identities = identities
         self._pyop_provider = pyop_provider
+        self._templates = template_service.templates
+        self.identities_page_sidebar_template = identities_page_sidebar_template
 
     def authorize(
         self, request: Request, redirect_uri: str, state: str, scope: str
@@ -41,15 +43,21 @@ class OidcService:
 
         self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
         if "identities" in scopes:
-            return templates.TemplateResponse(
+            template_context = {
+                "layout": "layout.html",
+                "request": request,
+                "state": session_key,
+                "identities": self._identities,
+            }
+
+            if self.identities_page_sidebar_template:
+                template_context["sidebar"] = self.identities_page_sidebar_template
+
+            return self._templates.TemplateResponse(
                 "identities.html",
-                {
-                    "request": request,
-                    "state": session_key,
-                    "identities": self._identities,
-                },
+                template_context,
             )
-        return templates.TemplateResponse(
+        return self._templates.TemplateResponse(
             "login.html",
             {
                 "request": request,

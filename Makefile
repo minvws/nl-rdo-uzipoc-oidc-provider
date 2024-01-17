@@ -16,10 +16,14 @@ clean_venv: ## Remove virtual environment
 
 run:
 	docker-compose up -d
+	npm run build
 	. .venv/bin/activate && ${env} python -m app.main
 
 setup-secrets:
 	scripts/./setup-secrets.sh
+
+setup-npm:
+	scripts/./setup-npm.sh
 
 pip-sync: ## synchronizes the .venv with the state of requirements.txt
 	. .venv/bin/activate && ${env} pip-compile --extra dev

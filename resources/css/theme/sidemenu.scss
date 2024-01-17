@@ -1,0 +1,35 @@
+nav.provider-sidemenu {
+    > div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+
+        > div {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            &.sticky-top {
+                position: -webkit-sticky;
+                position: sticky;
+                top: 2rem;
+            }
+
+            &.sticky-bottom {
+                position: -webkit-sticky;
+                position: sticky;
+                bottom: 2rem;
+            }
+        }
+
+        .back-to-proeftuin {
+            --navigation-link-icon: var(--icon-chevron-left);
+        }
+
+        ul {
+            padding: 0;
+        }
+    }
+}

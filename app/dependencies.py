@@ -12,6 +12,8 @@ from app.constants import (
 )
 from app.services.jwt_service import JwtService
 from app.services.oidc_service import OidcService
+from app.services.template_service import TemplateService
+from app.services.vite_manifest_service import ViteManifestService
 from app.storage.redis.redis_client import create_redis_client
 from app.utils import (
     load_jwk,
@@ -48,9 +50,22 @@ subject_id_factory = HashBasedSubjectIdentifierFactory(sub_hash_salt)
 authz_state = AuthorizationState(subject_id_factory)
 clients = json_from_file(config.get("app", "clients_path"))
 
+# Templates config
+vite_manifest = json_from_file(config.get("templates", "vite_manifest_path"))
+templates_directory = config.get("templates", "jinja_path")
+
 ####
 ## Services
 ####
+vite_manifest_service = ViteManifestService(
+    manifest=vite_manifest,
+)
+
+template_service = TemplateService(
+    jinja_template_directory=templates_directory,
+    vite_manifest_service=vite_manifest_service,
+)
+
 jwt_service_ = JwtService(
     jwt_priv_key=jwt_priv_key,
     crt_kid=kid_from_certificate(jwt_crt_content),
@@ -77,4 +92,8 @@ oidc_service_ = OidcService(
     register_base_url=register_base_url,
     identities=identities,
     pyop_provider=pyop_provider,
+    template_service=template_service,
+    identities_page_sidebar_template=config.get(
+        "templates", "identities_page_sidebar_template", fallback=None
+    ),
 )

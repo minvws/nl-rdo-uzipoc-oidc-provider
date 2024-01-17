@@ -1,0 +1,10 @@
+/* Form button */
+form {
+    button,
+    a.button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"] {
+        border-radius: 10rem;
+    }
+}

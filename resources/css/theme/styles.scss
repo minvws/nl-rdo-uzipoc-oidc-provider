@@ -1,0 +1,65 @@
+:root {
+    --navigation-link-icon: var(--icon-chevron-right);
+
+    --sidemenu-nav-width: 25rem;
+    --sidemenu-nav-padding-top: 6rem;
+    --sidemenu-nav-padding-right: 2rem;
+    --sidemenu-nav-padding-bottom: 6rem;
+    --sidemenu-nav-padding-left: 2rem;
+
+    --tile-background-color: #ffffff;
+    --tile-border-radius: 0.5rem;
+    --tile-border-color: #98abbd;
+
+    --layout-authentication-background-color: initial;
+    --text-dark: #000000;
+
+    --header-min-height: 4rem;
+    --header-border-width: 0 0 1px 0;
+    --header-border-color: #cccccc;
+    --header-navigation-background-color: #ffffff;
+
+    /* Content wrapper */
+    --header-content-wrapper-align-items: center;
+    --header-content-wrapper-padding-right: 3%;
+    --header-content-wrapper-padding-left: 3%;
+    --header-content-wrapper-flex-direction: row;
+    --header-content-wrapper-width: 80rem;
+
+
+    --ruby-red: #5279a9;
+    --ruby-red-background-color: #5279a9;
+    --ruby-red-text-color: #000000;
+
+    /* Text colors */
+    --ruby-red-text-color-dark: #000000;
+    --ruby-red-text-color-light: var(--ruby-red-text-color);
+
+    /* Hover */
+    --ruby-red-hover-background-color: #004161;
+    --ruby-red-hover-text-color: var(--ruby-red-text-color);
+
+    /* Disabled */
+    --ruby-red-disabled-background-color: #b2d7ee;
+    --ruby-red-disabled-text-color: var(--ruby-red-text-color-dark);
+
+    /* Active */
+    --ruby-red-active-background-color: #004161;
+    --ruby-red-active-text-color: var(--ruby-red-text-color);
+
+    /* Focus */
+    --ruby-red-focus-background-color: var(--ruby-red-background-color);
+    --ruby-red-focus-text-color: var(--ruby-red-text-color);
+
+    /* Selected */
+    --ruby-red-selected-background-color: #004161;
+    --ruby-red-selected-text-color: var(--ruby-red-text-color);
+
+    --ruby-red-ghost-background-color: #ffffff;
+    --ruby-red-ghost-text-color: #5279a9;
+
+    --button-ghost-border-radius: 10rem;
+    --button-ghost-hover-text-color: #ffffff;
+    --button-ghost-active-text-color: #ffffff;
+    --button-ghost-focus-text-color: #ffffff;
+}

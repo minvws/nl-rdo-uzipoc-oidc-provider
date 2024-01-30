@@ -11,3 +11,4 @@ __pycache__
 secrets/
 !package.json
 !package-lock.json
+node_modules

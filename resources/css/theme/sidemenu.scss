@@ -1,4 +1,10 @@
 nav.provider-sidemenu {
+    p > a {
+        --navigation-link-icon: initial;
+
+        padding-left: 0;
+    }
+
     > div {
         height: 100%;
         display: flex;

@@ -126,7 +126,7 @@ pyop==3.4.1
     # via app (setup.py)
 pytest==7.2.1
     # via app (setup.py)
-python-multipart==0.0.6
+python-multipart==0.0.7
     # via app (setup.py)
 pyyaml==6.0.1
     # via bandit

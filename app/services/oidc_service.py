@@ -76,7 +76,8 @@ class OidcService:
         authorize_state = json.loads(authorize_state.decode("utf-8"))
 
         resp = requests.get(
-            self._register_base_url + "/signed-userinfo?bsn_number=" + bsn_number, timeout=30
+            self._register_base_url + "/signed-userinfo?bsn_number=" + bsn_number,
+            timeout=30,
         )
         if resp.status_code != 200:
             raise RuntimeError("Unable to fetch uzi number")

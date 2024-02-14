@@ -74,7 +74,7 @@ class OidcService:
         if authorize_state is None:
             raise RuntimeError("Invalid state")
         authorize_state = json.loads(authorize_state.decode("utf-8"))
-        print(authorize_state)
+
         resp = requests.get(
             self._register_base_url + "/signed-userinfo?bsn=" + bsn,
             timeout=30,

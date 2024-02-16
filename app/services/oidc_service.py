@@ -8,7 +8,7 @@ from pyop.provider import Provider as PyopProvider
 
 import requests
 from redis import Redis
-from starlette.responses import JSONResponse, Response
+from starlette.responses import JSONResponse, Response, RedirectResponse
 
 from app.services.jwt_service import JwtService
 from app.services.template_service import TemplateService
@@ -67,7 +67,7 @@ class OidcService:
 
     def submit(
         self,
-        uzi_number: str,
+        bsn: str,
         state: str,
     ) -> Response:
         authorize_state = self._redis_client.get("authorize_" + state)
@@ -76,16 +76,20 @@ class OidcService:
         authorize_state = json.loads(authorize_state.decode("utf-8"))
 
         resp = requests.get(
-            self._register_base_url + "/signed-uzi?uzi_number=" + uzi_number, timeout=30
+            self._register_base_url + "/signed-userinfo?bsn=" + bsn,
+            timeout=30,
         )
         if resp.status_code != 200:
-            raise RuntimeError("Unable to fetch uzi number")
+            return RedirectResponse(
+                authorize_state["redirect_uri"],
+                status_code=400,
+            )
 
         client_public_key_path = self._get_pyop_provider_client_secret_path()
         client_public_key = load_jwk(client_public_key_path)
 
         userinfo = self._jwt_service.create_jwe(
-            client_public_key, {"signed_uzi_number": resp.json()["signed_uzi_number"]}
+            client_public_key, {"signed_userinfo": resp.json()["signed_userinfo"]}
         )
         access_token = secrets.token_urlsafe(96)[:64]
         self._redis_client.set("userinfo_" + access_token, userinfo)

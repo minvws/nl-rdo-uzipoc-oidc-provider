@@ -8,7 +8,7 @@ from pyop.provider import Provider as PyopProvider
 
 import requests
 from redis import Redis
-from starlette.responses import JSONResponse, Response, RedirectResponse
+from starlette.responses import JSONResponse, Response
 
 from app.services.jwt_service import JwtService
 from app.services.template_service import TemplateService

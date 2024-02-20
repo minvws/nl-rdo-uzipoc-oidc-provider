@@ -80,10 +80,18 @@ class OidcService:
             timeout=30,
         )
         if resp.status_code != 200:
-            return RedirectResponse(
-                authorize_state["redirect_uri"],
-                status_code=400,
+            redirect_with_error = (
+                authorize_state["redirect_uri"]
+                + "?"
+                + urlencode(
+                    {
+                        "state": authorize_state["state"],
+                        "error": "invalid_request",
+                        "error_description": "service is unavailable",
+                    }
+                )
             )
+            return JSONResponse({"redirect_url": redirect_with_error})
 
         client_public_key_path = self._get_pyop_provider_client_secret_path()
         client_public_key = load_jwk(client_public_key_path)

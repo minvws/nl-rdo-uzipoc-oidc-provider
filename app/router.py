@@ -1,5 +1,3 @@
-import json
-
 from fastapi import APIRouter, Depends, Request
 from fastapi import Form
 from fastapi.responses import Response

@@ -20,11 +20,20 @@ async function handleOnSubmit(event) {
         return
     }
     const data = await response.json();
+    console.log(`bsn sent ${bsn}`)
 
     window.location.href = data["redirect_url"];
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("form")
-    form.addEventListener("submit", handleOnSubmit)
+    const loginMethodTag = document.getElementById("identities") ?? document.getElementById("zsm");
+    if (loginMethodTag.id == "zsm") {
+        const form = document.getElementById("form")
+        form.addEventListener("submit", handleOnSubmit);
+    } else {
+        const forms = document.getElementsByTagName("form");
+        for (let i = 0; i < forms.length; i++) {
+            forms[i].addEventListener("submit", handleOnSubmit);
+        }
+    }
 })

@@ -40,14 +40,21 @@ class OidcService:
         scopes = scope.split(" ")
         session_key = rand_pass(100)
         authorize_state = {"redirect_uri": redirect_uri, "state": state}
-
         self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
         if "identities" in scopes:
+            identities = self._identities.copy()
+            for identity in identities:
+                identity["redirect_url"] = "/submit" + "?" + urlencode({
+                    "state": state,
+                    "uzi_id": identity["uzi_id"]
+                })
+
+            print(identities)
             template_context = {
                 "layout": "layout.html",
                 "request": request,
                 "state": session_key,
-                "identities": self._identities,
+                "identities": identities,
             }
 
             if self.identities_page_sidebar_template:

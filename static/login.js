@@ -1,28 +1,42 @@
+function getValueFromElementById(id) {
+    const element = document.getElementById(id);
+    if (!element) {
+        console.error(`Element ${id} does not exist`);
+        return
+    }
+
+    return element.value;
+}
+
 async function handleOnSubmit(event) {
     event.preventDefault();
 
-    const bsn = document.getElementById("uzi_id").value;
-    const state = document.getElementById("state").value;
+    const bsn = getValueFromElementById("uzi_id");
+    const state = getValueFromElementById("state");
 
-    const response = await fetch("/submit", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            "uzi_id": bsn,
-            "state": state,
-        }),
-    });
+    try {
+        const response = await fetch("/submit", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "uzi_id": bsn,
+                "state": state,
+            }),
+        });
 
-    if (response.status !== 200) {
-        console.log("Error: " + response.statusText);
-        return
+        if (response.status !== 200) {
+            console.log("Error: " + response.statusText);
+            return
+        }
+        const data = await response.json();
+        console.log(`bsn sent ${bsn}`)
+
+        window.location.href = data["redirect_url"];
+    } catch (error) {
+        console.error(error.message);
     }
-    const data = await response.json();
-    console.log(`bsn sent ${bsn}`)
-
-    window.location.href = data["redirect_url"];
 }
 
 window.addEventListener("DOMContentLoaded", () => {

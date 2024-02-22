@@ -11,13 +11,16 @@
       <div class="center">
           <h1>Zorg Specifieke Login</h1>
           <form action="" id="form">
-              <div class="txt_field">
-                  <input type="text" value="900020108" name="uzi_id" id="uzi_id" placeholder="123456789" required>
+              <div id="token_input_section" class="txt_field">
+                  <input type="text" value="900020108" name="bsn_number" id="bsn_number" placeholder="123456789" required>
                   <span></span>
-                  <label>UZI nummer</label>
+                  <label for="bsn_number">UZI nummer</label>
+                  <input id="token_expiry" type="number" name="token_expiry" value="0">
+                  <span></span>
+                  <label for="token_expiry">Token Expiry (Seconds)</label>
               </div>
               <input hidden type="text" name="state" id="state" value="{{state}}"/>
-              <input name="submit" type="Submit" value="Login">
+              <input id="submit_button" name="submit" type="Submit" value="Get Token">
               <div class="signup_link">
               </div>
           </form>

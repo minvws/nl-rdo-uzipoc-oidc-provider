@@ -124,3 +124,9 @@ input[type="Submit"]:hover{
   width: 100vw;
   height: 25vh;
 }
+
+.Login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

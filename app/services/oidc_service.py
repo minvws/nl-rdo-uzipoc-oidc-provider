@@ -1,6 +1,6 @@
 import json
 import secrets
-from typing import Dict, Optional
+from typing import Dict, Optional, Any
 from urllib.parse import urlencode
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
@@ -64,18 +64,19 @@ class OidcService:
             },
         )
 
-    def submit(
-        self,
-        bsn: str,
-        state: str,
-    ) -> Response:
+    def submit(self, body: Dict[str, Any]) -> Response:
+        if "uzi_id" not in body or "state" not in body:
+            return Response(status_code=400)
+
+        uzi_id = body["uzi_id"]
+        state = body["state"]
         authorize_state = self._redis_client.get("authorize_" + state)
         if authorize_state is None:
             raise RuntimeError("Invalid state")
         authorize_state = json.loads(authorize_state.decode("utf-8"))
 
         resp = requests.get(
-            self._register_base_url + "/signed-userinfo?bsn=" + bsn,
+            self._register_base_url + "/signed-userinfo?bsn=" + uzi_id,
             timeout=30,
         )
         if resp.status_code != 200:
@@ -102,6 +103,53 @@ class OidcService:
             + urlencode({"state": authorize_state["state"], "code": code})
         )
         return Response(json.dumps({"redirect_url": redirect_url}))
+
+    def handle_submit(self, body: Dict[str, Any]) -> Response:
+        if "login_hint" not in body:
+            return Response(status_code=400)
+
+        if body["login_hint"] == "identities":
+            return self.submit(body)
+
+        if "signed_userinfo" not in body or "state" not in body:
+            return Response(status_code=400)
+
+        signed_userinfo = body["signed_userinfo"]
+        state = body["state"]
+
+        authorize_state = self._redis_client.get("authorize_" + state)
+        if authorize_state is None:
+            raise RuntimeError("Invalid state")
+
+        authorize_state = json.loads(authorize_state.decode("utf-8"))
+        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key = load_jwk(client_public_key_path)
+
+        userinfo = self._jwt_service.create_jwe(
+            client_public_key, {"signed_userinfo": signed_userinfo}
+        )
+        access_token = secrets.token_urlsafe(96)[:64]
+        self._redis_client.set("userinfo_" + access_token, userinfo)
+
+        code = secrets.token_urlsafe(96)[:64]
+        self._redis_client.set("access_token_" + code, access_token)
+
+        redirect_url = (
+            authorize_state["redirect_uri"]
+            + "?"
+            + urlencode({"state": authorize_state["state"], "code": code})
+        )
+        return Response(json.dumps({"redirect_url": redirect_url}))
+
+    def get_userinfo_token(
+        self, bsn: str, userinfo_validity_in_seconds: Optional[int] = None
+    ) -> Dict[str, str]:
+        response = requests.get(
+            self._register_base_url + "/signed-userinfo?bsn=" + bsn,
+            timeout=30,
+        )
+
+        return response.json()
 
     def token(self, code: str) -> Response:
         access_token = self._redis_client.get("access_token_" + code)

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, Request
 from fastapi import Form
 from fastapi.responses import Response
@@ -26,11 +28,12 @@ async def submit(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     posted = await request.json()
-    if "uzi_id" not in posted or "state" not in posted:
-        return Response(status_code=400)
-    uzi_id = posted["uzi_id"]
-    state = posted["state"]
-    return oidc_service.submit(uzi_id, state)
+    # if "uzi_id" not in posted or "state" not in posted:
+    #     return Response(status_code=400)
+    # uzi_id = posted["uzi_id"]
+    # state = posted["state"]
+    # return oidc_service.submit(uzi_id, state)
+    return oidc_service.handle_submit(posted)
 
 
 @router.post("/token")
@@ -61,3 +64,12 @@ async def get_jwks_keys(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     return oidc_service.get_jwks()
+
+
+@router.get("/signed-userinfo")
+async def get_signed_userinfo(
+    bsn: str,
+    userinfo_validity_in_seconds: Optional[int] = None,
+    oidc_service: OidcService = Depends(lambda: oidc_service_),
+) -> Response:
+    return oidc_service.get_userinfo_token(bsn, userinfo_validity_in_seconds)

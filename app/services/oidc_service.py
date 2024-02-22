@@ -80,9 +80,13 @@ class OidcService:
             timeout=30,
         )
         if resp.status_code != 200:
+            redirect_uri = authorize_state["redirect_uri"]
+            append_symbol = (
+                "&" if redirect_uri is not None and "?" in redirect_uri else "?"
+            )
             redirect_with_error = (
-                authorize_state["redirect_uri"]
-                + "?"
+                redirect_uri
+                + append_symbol
                 + urlencode(
                     {
                         "state": authorize_state["state"],

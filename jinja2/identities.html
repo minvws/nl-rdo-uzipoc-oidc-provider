@@ -8,7 +8,7 @@
                 <div role="group">
                     <h1>{{ identity["name"] }}</h1>
                     <p>{{ identity["description"] }}</p>
-                    <form class="inline" id="{ identity["uzi_id"] }}-name">
+                    <form class="inline" id="identity-{{ identity["uzi_id"] }}">
                     <input hidden type="text" value="{{ identity["uzi_id"] }}" name="uzi_id" id="uzi_id">
                     <input hidden type="text" name="state" id="state" value="{{state}}"/>
                     <input name="submit" type="Submit" value="Log in met deze identiteit" id="{{ identity["uzi_id"] }}-submit" class="ghost">

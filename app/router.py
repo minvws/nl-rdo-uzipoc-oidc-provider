@@ -28,11 +28,6 @@ async def submit(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     posted = await request.json()
-    # if "uzi_id" not in posted or "state" not in posted:
-    #     return Response(status_code=400)
-    # uzi_id = posted["uzi_id"]
-    # state = posted["state"]
-    # return oidc_service.submit(uzi_id, state)
     return oidc_service.handle_submit(posted)
 
 

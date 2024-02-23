@@ -145,7 +145,11 @@ class OidcService:
         self, bsn: str, userinfo_validity_in_seconds: Optional[int] = None
     ) -> Dict[str, str]:
         response = requests.get(
-            self._register_base_url + "/signed-userinfo?bsn=" + bsn,
+            self._register_base_url
+            + "/signed-userinfo?bsn="
+            + bsn
+            + "&userinfo_validity_in_seconds="
+            + userinfo_validity_in_seconds,
             timeout=30,
         )
 

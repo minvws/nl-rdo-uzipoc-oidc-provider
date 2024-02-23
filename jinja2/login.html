@@ -10,19 +10,29 @@
     <div id="zsm" class="container">
       <div class="center">
           <h1>Zorg Specifieke Login</h1>
-          <form action="" id="form">
-              <div id="token_input_section" class="txt_field">
-                  <input type="text" value="900020108" name="bsn_number" id="bsn_number" placeholder="123456789" required>
+          <form action="" id="token-form">
+              <div class="txt_field">
+                  <input type="text" value="900020108" name="bsn-number" id="bsn-number" placeholder="123456789" required>
                   <span></span>
-                  <label for="bsn_number">UZI nummer</label>
-                  <input id="token_expiry" type="number" name="token_expiry" value="0">
+                  <label for="bsn-number">UZI nummer</label>
+              </div>
+              <div class="txt_field">
+                  <input id="token-expiry" type="number" name="token_expiry" value="0">
                   <span></span>
-                  <label for="token_expiry">Token Expiry (Seconds)</label>
+                  <label for="token-expiry">Token Expiry (Seconds)</label>
               </div>
               <input hidden type="text" name="state" id="state" value="{{state}}"/>
               <input id="submit_button" name="submit" type="Submit" value="Get Token">
               <div class="signup_link">
               </div>
+          </form>
+          <form id="login-form">
+              <div class="txt_field">
+                  <input type="text" id="token-input">
+                  <span></span>
+                  <label for="token-input">Userinfo Token</label>
+              </div>
+                  <input name="submit" type="Submit" value="Login">
           </form>
       </div>
     </div>

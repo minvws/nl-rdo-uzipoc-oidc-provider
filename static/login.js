@@ -9,11 +9,11 @@ function getValueFromElementById(id) {
 }
 
 
-async function habdleUserInfoToken(event) {
+async function handleUserInfoToken(event) {
     event.preventDefault();
 
-    const bsn = getValueFromElementById("bsn_number");
-    const tokenValidityInSeconds = getValueFromElementById("token_expiry");
+    const bsn = getValueFromElementById("bsn-number");
+    const tokenValidityInSeconds = getValueFromElementById("token-expiry");
 
     const params = tokenValidityInSeconds ? {
         "bsn": bsn,
@@ -30,47 +30,15 @@ async function habdleUserInfoToken(event) {
     });
     const userinfoToken = await response.json();
 
-    // Remove input from Dom
-    const tokenInputSection = document.getElementById("token_input_section");
-    tokenInputSection.remove();
+    const tokenInput = document.getElementById("token-input");
+    tokenInput.setAttribute('value', userinfoToken["signed_userinfo"]);
 
-    // create new elements
-    const tokenInputDiv = document.createElement("div");
-    tokenInputDiv.setAttribute("class", "txt_field")
-
-    const inputToken = document.createElement("input");
-    inputToken.setAttribute("id", "userinfo_token");
-    inputToken.setAttribute("type", "text");
-    inputToken.setAttribute("value", userinfoToken["signed_userinfo"]);
-
-    const inputTokenLabel = document.createElement("label");
-    inputTokenLabel.setAttribute("for", "userinfo_token");
-    inputTokenLabel.innerHTML = "Signed Token"
-
-    const span = document.createElement("span");
-
-    // start injecting new elements to the DOM
-    tokenInputDiv.appendChild(inputToken);
-    tokenInputDiv.appendChild(span);
-    tokenInputDiv.appendChild(inputTokenLabel);
-
-     // change button text
-    const submitButton = document.getElementById("submit_button");
-    submitButton.value = "Login";
-
-
-    const form = document.getElementById("form");
-    form.removeChild(submitButton);
-    form.appendChild(tokenInputDiv);
-    form.appendChild(submitButton);
-
-    form.removeEventListener("submit", habdleUserInfoToken)
-    form.addEventListener("submit", handleLogin)
 }
 
-
 async function handleLogin (event) {
-    const userinfoToken = getValueFromElementById("userinfo_token");
+    event.preventDefault();
+
+    const userinfoToken = getValueFromElementById("token-input");
     const state = getValueFromElementById("state");
 
     const body = {
@@ -93,11 +61,11 @@ async function handleLogin (event) {
         }
 
         const data = await response.json();
+        console.log(data);
         window.location.href = data["redirect_url"];
     } catch (error) {
         console.error(error.message)
     }
-
 }
 
 async function handleIdentitiesOnSubmit(event) {
@@ -134,8 +102,12 @@ async function handleIdentitiesOnSubmit(event) {
 window.addEventListener("DOMContentLoaded", () => {
     const loginMethodTag = document.getElementById("identities") ?? document.getElementById("zsm");
     if (loginMethodTag.id == "zsm") {
-        const form = document.getElementById("form")
-        form.addEventListener("submit", habdleUserInfoToken);
+        const tokenForm = document.getElementById("token-form");
+        const loginForm = document.getElementById("login-form");
+
+        tokenForm.addEventListener("submit", handleUserInfoToken);
+        loginForm.addEventListener("submit", handleLogin);
+
     } else {
         const forms = document.getElementsByTagName("form");
         for (let i = 0; i < forms.length; i++) {

@@ -31,7 +31,12 @@ async function handleUserInfoToken(event) {
     const userinfoToken = await response.json();
 
     const tokenInput = document.getElementById("token-input");
-    tokenInput.setAttribute('value', userinfoToken["signed_userinfo"]);
+    tokenInput.value = userinfoToken["signed_userinfo"];
+
+    const loginButton = document.getElementById("login-button");
+    if (loginButton.disabled) {
+        loginButton.disabled = false;
+    }
 
 }
 
@@ -61,7 +66,6 @@ async function handleLogin (event) {
         }
 
         const data = await response.json();
-        console.log(data);
         window.location.href = data["redirect_url"];
     } catch (error) {
         console.error(error.message)
@@ -99,9 +103,26 @@ async function handleIdentitiesOnSubmit(event) {
     }
 }
 
+function handleDisableLoginButton (event) {
+    event.preventDefault();
+    const loginButton = document.getElementById("login-button");
+    const inputTokenValue = getValueFromElementById("token-input");
+
+    if (inputTokenValue.length > 0) {
+        loginButton.disabled = false;
+    } else {
+    loginButton.disabled = true;
+    }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
     const loginMethodTag = document.getElementById("identities") ?? document.getElementById("zsm");
     if (loginMethodTag.id == "zsm") {
+        const inputToken = document.getElementById("token-input");
+        const loginButton = document.getElementById("login-button");
+        loginButton.disabled = true;
+        inputToken.addEventListener("input", handleDisableLoginButton);
+
         const tokenForm = document.getElementById("token-form");
         const loginForm = document.getElementById("login-form");
 

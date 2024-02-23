@@ -147,9 +147,7 @@ class OidcService:
         response = requests.get(
             self._register_base_url
             + "/signed-userinfo?bsn="
-            + bsn
-            + "&userinfo_validity_in_seconds="
-            + userinfo_validity_in_seconds,
+            + bsn,
             timeout=30,
         )
 

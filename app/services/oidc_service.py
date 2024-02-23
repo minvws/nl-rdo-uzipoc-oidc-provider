@@ -141,17 +141,31 @@ class OidcService:
         )
         return Response(json.dumps({"redirect_url": redirect_url}))
 
-    def get_userinfo_token(
-        self, bsn: str, userinfo_validity_in_seconds: Optional[int] = None
-    ) -> Dict[str, str]:
-        response = requests.get(
+    def get_userinfo_token_from_register(
+        self, bsn: str, userinfo_validity_in_seconds: Optional[str] = None
+    ) -> Response:
+        append_symbol = "&" if "?" in self._register_base_url else "?"
+        params = (
+            {"bsn": bsn, "userinfo_validity_in_seconds": userinfo_validity_in_seconds}
+            if userinfo_validity_in_seconds is not None
+            else {"bsn": bsn}
+        )
+        signed_userinfo_endpoint = (
             self._register_base_url
-            + "/signed-userinfo?bsn="
-            + bsn,
+            + "/signed-userinfo"
+            + append_symbol
+            + urlencode(params)
+        )
+
+        response = requests.get(
+            signed_userinfo_endpoint,
             timeout=30,
         )
 
-        return response.json()
+        if response.status_code != 200:
+            return Response(status_code=400)
+
+        return JSONResponse(response.json())
 
     def token(self, code: str) -> Response:
         access_token = self._redis_client.get("access_token_" + code)

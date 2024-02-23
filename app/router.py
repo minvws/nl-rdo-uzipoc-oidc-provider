@@ -69,7 +69,9 @@ async def get_jwks_keys(
 @router.get("/signed-userinfo")
 async def get_signed_userinfo(
     bsn: str,
-    userinfo_validity_in_seconds: Optional[int] = None,
+    userinfo_validity_in_seconds: Optional[str] = None,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
-    return oidc_service.get_userinfo_token(bsn, userinfo_validity_in_seconds)
+    return oidc_service.get_userinfo_token_from_register(
+        bsn, userinfo_validity_in_seconds
+    )

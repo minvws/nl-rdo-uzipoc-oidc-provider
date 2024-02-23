@@ -13,11 +13,11 @@ async function handleUserInfoToken(event) {
     event.preventDefault();
 
     const bsn = getValueFromElementById("bsn-number");
-    const tokenValidityInSeconds = getValueFromElementById("token-expiry");
+    const userinfoValidityInSeconds = getValueFromElementById("token-expiry");
 
-    const params = tokenValidityInSeconds ? {
+    const params = userinfoValidityInSeconds ? {
         "bsn": bsn,
-        "token_expiry_in_seconds" : tokenValidityInSeconds
+        "userinfo_validity_in_seconds" : userinfoValidityInSeconds
     } : {"bsn": bsn};
 
     const searchParmas = new URLSearchParams(params);

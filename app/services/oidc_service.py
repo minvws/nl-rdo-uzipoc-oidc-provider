@@ -8,7 +8,7 @@ from pyop.provider import Provider as PyopProvider
 
 import requests
 from redis import Redis
-from starlette.responses import JSONResponse, Response, RedirectResponse
+from starlette.responses import JSONResponse, Response
 
 from app.services.jwt_service import JwtService
 from app.services.template_service import TemplateService
@@ -80,10 +80,22 @@ class OidcService:
             timeout=30,
         )
         if resp.status_code != 200:
-            return RedirectResponse(
-                authorize_state["redirect_uri"],
-                status_code=400,
+            redirect_uri = authorize_state["redirect_uri"]
+            append_symbol = (
+                "&" if redirect_uri is not None and "?" in redirect_uri else "?"
             )
+            redirect_with_error = (
+                redirect_uri
+                + append_symbol
+                + urlencode(
+                    {
+                        "state": authorize_state["state"],
+                        "error": "invalid_request",
+                        "error_description": "service is unavailable",
+                    }
+                )
+            )
+            return JSONResponse({"redirect_url": redirect_with_error})
 
         client_public_key_path = self._get_pyop_provider_client_secret_path()
         client_public_key = load_jwk(client_public_key_path)

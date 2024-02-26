@@ -14,6 +14,7 @@ body{
   left: 50%;
   transform: translate(-50%, -50%);
   width: 29vw;
+  height: 40vh;
   background: white;
   border-radius: 10px;
 }
@@ -102,6 +103,10 @@ input[type="Submit"]:hover{
   background: #2691d9;
   color: #e9f4fb;
   transition: .5s;
+}
+
+input[type="Submit"]:disabled {
+  cursor: not-allowed;
 }
 
 .signup_link{

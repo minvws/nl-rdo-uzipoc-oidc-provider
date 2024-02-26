@@ -7,19 +7,32 @@
     <link rel="stylesheet" href="static/css/zsm.css" />
   </head>
   <body>
-    <div class="container">
+    <div id="zsm" class="container">
       <div class="center">
           <h1>Zorg Specifieke Login</h1>
-          <form action="" id="form">
+          <form action="" id="token-form">
               <div class="txt_field">
-                  <input type="text" value="900020108" name="uzi_id" id="uzi_id" placeholder="123456789" required>
+                  <input type="text" value="900020108" name="bsn-number" id="bsn-number" placeholder="123456789" required>
                   <span></span>
-                  <label>UZI nummer</label>
+                  <label for="bsn-number">BSN nummer</label>
+              </div>
+              <div class="txt_field">
+                  <input id="token-expiry" type="number" name="token_expiry">
+                  <span></span>
+                  <label for="token-expiry">Token Expiry (Seconds)</label>
               </div>
               <input hidden type="text" name="state" id="state" value="{{state}}"/>
-              <input name="submit" type="Submit" value="Login">
+              <input id="token-button" name="submit" type="Submit" value="Get Token">
               <div class="signup_link">
               </div>
+          </form>
+          <form id="login-form">
+              <div class="txt_field">
+                  <input type="text" id="token-input">
+                  <span></span>
+                  <label for="token-input">Userinfo Token</label>
+              </div>
+                  <input id="login-button" name="login-button" type="Submit" value="Login" required>
           </form>
       </div>
     </div>

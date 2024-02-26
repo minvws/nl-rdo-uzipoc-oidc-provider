@@ -65,10 +65,10 @@ class OidcService:
         )
 
     def submit(self, body: Dict[str, Any]) -> Response:
-        if "uzi_id" not in body or "state" not in body:
+        if "bsn" not in body or "state" not in body:
             return Response(status_code=400)
 
-        uzi_id = body["uzi_id"]
+        bsn = body["bsn"]
         state = body["state"]
         authorize_state = self._redis_client.get("authorize_" + state)
         if authorize_state is None:
@@ -76,7 +76,7 @@ class OidcService:
         authorize_state = json.loads(authorize_state.decode("utf-8"))
 
         resp = requests.get(
-            self._register_base_url + "/signed-userinfo?bsn=" + uzi_id,
+            self._register_base_url + "/signed-userinfo?bsn=" + bsn,
             timeout=30,
         )
         if resp.status_code != 200:

@@ -75,7 +75,7 @@ async function handleLogin (event) {
 async function handleIdentitiesOnSubmit(event) {
     event.preventDefault();
 
-    const bsn = getValueFromElementById("uzi_id");
+    const bsn = getValueFromElementById("bsn-number");
     const state = getValueFromElementById("state");
 
     try {
@@ -85,7 +85,7 @@ async function handleIdentitiesOnSubmit(event) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "uzi_id": bsn,
+                "bsn": bsn,
                 "state": state,
                 "login_hint": "identities"
             }),

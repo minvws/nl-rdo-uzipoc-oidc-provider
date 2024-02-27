@@ -1,12 +1,12 @@
 [
   {
-    "name": "Aron Bjorn Laar",
-    "description": "Werkzaam bij 'De Ziekenboeg' als cardioloog.",
+    "name": "Aaron Bjorn der See",
+    "description": "This is an example of a doctor named Aaron",
     "bsn": "999991772"
   },
   {
     "name": "Keira Smith",
-    "description": "Werkzaam bij 'De Ziekenboeg' als klinisch geriater, reumatoloog en specialist ouderengeneeskunde.",
+    "description": "This is an example of a nurse called Keira Smith",
     "bsn": "900020108"
   }
 ]

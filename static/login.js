@@ -75,8 +75,9 @@ async function handleLogin (event) {
 async function handleIdentitiesOnSubmit(event) {
     event.preventDefault();
 
-    const bsn = getValueFromElementById("bsn-number");
-    const state = getValueFromElementById("state");
+    const formChildren = this.children;
+    const bsn = formChildren["bsn-number"].value;
+    const state = formChildren["state"].value;
 
     try {
         const response = await fetch("/submit", {

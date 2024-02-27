@@ -133,8 +133,6 @@ window.addEventListener("DOMContentLoaded", () => {
     } else {
         const forms = document.getElementsByTagName("form");
         for (let i = 0; i < forms.length; i++) {
-            // const form = forms[i]
-            // console.log(form.children)
             forms[i].addEventListener("submit", handleIdentitiesOnSubmit);
         }
     }

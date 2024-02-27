@@ -38,6 +38,9 @@ app.conf:
 clients.json:
 	cp clients.json.example clients.json
 
+identities.json:
+	cp identities.json.example identities.json
+
 lint:
 	. .venv/bin/activate && ${env} pylint app
 	. .venv/bin/activate && ${env} black --check app

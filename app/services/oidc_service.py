@@ -13,6 +13,7 @@ from starlette.responses import JSONResponse, Response
 from app.services.jwt_service import JwtService
 from app.services.template_service import TemplateService
 from app.utils import rand_pass, load_jwk
+from app.models.authorize_request import AuthorizeRequest
 
 
 class OidcService:
@@ -35,11 +36,14 @@ class OidcService:
         self.identities_page_sidebar_template = identities_page_sidebar_template
 
     def authorize(
-        self, request: Request, redirect_uri: str, state: str, scope: str
+        self, request: Request, authorize_request: AuthorizeRequest
     ) -> Response:
-        scopes = scope.split(" ")
+        scopes = authorize_request.scope.split(" ")
         session_key = rand_pass(100)
-        authorize_state = {"redirect_uri": redirect_uri, "state": state}
+        authorize_state = {
+            "redirect_uri": authorize_request.redirect_uri,
+            "state": authorize_request.state,
+        }
         self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
         if "identities" in scopes:
             template_context = {

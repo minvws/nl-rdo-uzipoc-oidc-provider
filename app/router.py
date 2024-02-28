@@ -5,7 +5,7 @@ from fastapi import Form
 from fastapi.responses import Response
 
 from app.dependencies import oidc_service_
-
+from app.models.authorize_request import AuthorizeRequest
 from app.services.oidc_service import OidcService
 
 router = APIRouter()
@@ -14,12 +14,10 @@ router = APIRouter()
 @router.get("/authorize")
 async def authorize(
     request: Request,
-    redirect_uri: str,
-    state: str,
-    scope: str,
+    authrize_request: AuthorizeRequest = Depends(),
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
-    return oidc_service.authorize(request, redirect_uri, state, scope)
+    return oidc_service.authorize(request, authrize_request)
 
 
 @router.post("/submit")

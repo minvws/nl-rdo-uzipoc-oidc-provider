@@ -14,7 +14,7 @@ body{
   left: 50%;
   transform: translate(-50%, -50%);
   width: 29vw;
-  height: 40vh;
+  height: auto;
   background: white;
   border-radius: 10px;
 }
@@ -96,6 +96,7 @@ input[type="Submit"]{
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
+  margin-bottom: 12px;
 
 }
 

@@ -31,7 +31,6 @@ async def submit(
 
 @router.post("/token")
 async def token(
-    # code: str = Form(...),
     request: Request,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:

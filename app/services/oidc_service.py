@@ -14,6 +14,7 @@ from app.services.jwt_service import JwtService
 from app.services.template_service import TemplateService
 from app.utils import rand_pass, load_jwk
 from app.models.authorize_request import AuthorizeRequest
+from app.models.token_request import TokenRequest
 
 
 class OidcService:
@@ -38,11 +39,18 @@ class OidcService:
     def authorize(
         self, request: Request, authorize_request: AuthorizeRequest
     ) -> Response:
+        pyop_authorize_request = self._pyop_provider.parse_authentication_request(
+            urlencode(authorize_request.dict()), request.headers
+        )
+
+        authorize_response = self._pyop_provider.authorize(pyop_authorize_request, "_")
+
         scopes = authorize_request.scope.split(" ")
         session_key = rand_pass(100)
         authorize_state = {
             "redirect_uri": authorize_request.redirect_uri,
-            "state": authorize_request.state,
+            "state": authorize_response["state"],
+            "client_id": authorize_request.client_id,
         }
         self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
         if "identities" in scopes:
@@ -101,7 +109,9 @@ class OidcService:
             )
             return JSONResponse({"redirect_url": redirect_with_error})
 
-        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key_path = self._get_pyop_provider_client_secret_path(
+            authorize_state["client_id"]
+        )
         client_public_key = load_jwk(client_public_key_path)
 
         userinfo = self._jwt_service.create_jwe(
@@ -138,7 +148,9 @@ class OidcService:
             raise RuntimeError("Invalid state")
 
         authorize_state = json.loads(authorize_state.decode("utf-8"))
-        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key_path = self._get_pyop_provider_client_secret_path(
+            authorize_state["client_id"]
+        )
         client_public_key = load_jwk(client_public_key_path)
 
         userinfo = self._jwt_service.create_jwe(
@@ -183,12 +195,14 @@ class OidcService:
 
         return JSONResponse(response.json())
 
-    def token(self, code: str) -> Response:
-        access_token = self._redis_client.get("access_token_" + code)
+    def token(self, token_request: TokenRequest) -> Response:
+        access_token = self._redis_client.get("access_token_" + token_request.code)
         if access_token is None:
             raise RuntimeError("Invalid code")
 
-        client_public_key_path = self._get_pyop_provider_client_secret_path()
+        client_public_key_path = self._get_pyop_provider_client_secret_path(
+            token_request.client_id
+        )
         client_public_key = load_jwk(client_public_key_path)
 
         id_token = self._jwt_service.create_jwe(client_public_key, {})
@@ -214,7 +228,7 @@ class OidcService:
             jsonable_encoder(self._pyop_provider.configuration_information)
         )
 
-    def _get_pyop_provider_client_secret_path(self) -> str:
+    def _get_pyop_provider_client_secret_path(self, client_id: str) -> str:
         # Acts like a get data from database
-        clients = self._pyop_provider.clients[0]
-        return clients["client_public_key_path"]
+        client = self._pyop_provider.clients[client_id]
+        return client["client_public_key_path"]

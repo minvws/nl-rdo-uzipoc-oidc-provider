@@ -1,11 +1,11 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Request
-from fastapi import Form
 from fastapi.responses import Response
 
 from app.dependencies import oidc_service_
 from app.models.authorize_request import AuthorizeRequest
+from app.models.token_request import TokenRequest
 from app.services.oidc_service import OidcService
 
 router = APIRouter()
@@ -31,10 +31,14 @@ async def submit(
 
 @router.post("/token")
 async def token(
-    code: str = Form(...),
+    # code: str = Form(...),
+    request: Request,
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
-    return oidc_service.token(code)
+    token_request = TokenRequest.from_body_query_string(
+        (await request.body()).decode("utf-8")
+    )
+    return oidc_service.token(token_request)
 
 
 @router.get("/userinfo")

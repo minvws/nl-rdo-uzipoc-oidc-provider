@@ -44,7 +44,7 @@ cryptography==42.0.4
     #   types-redis
 defusedxml==0.7.1
     # via oic
-deprecated==1.2.13
+deprecated==1.2.14
     # via jwcrypto
 dill==0.3.6
     # via pylint

@@ -4,8 +4,6 @@ from typing import Dict, Optional, Any
 from urllib.parse import urlencode
 from fastapi import Request
 from fastapi.encoders import jsonable_encoder
-from pyop.provider import Provider as PyopProvider,  AuthorizationRequest
-from pyop.access_token import AccessToken
 
 import requests
 from redis import Redis
@@ -14,7 +12,7 @@ from starlette.responses import JSONResponse, Response
 from app.services.jwt_service import JwtService
 from app.services.template_service import TemplateService
 from app.services.app_provider import AppProvider
-from app.utils import rand_pass, load_jwk
+from app.utils import rand_pass
 from app.models.authorize_request import AuthorizeRequest
 from app.models.token_request import TokenRequest
 
@@ -41,15 +39,10 @@ class OidcService:
     def authorize(
         self, request: Request, authorize_request: AuthorizeRequest
     ) -> Response:
-        scopes = authorize_request.scope.split(" ")
         session_key = rand_pass(100)
-        # authorize_state = {
-        #     "redirect_uri": authorize_request.redirect_uri,
-        #     "state": authorize_request.state,
-        #     "client_id": authorize_request.client_id,
-        # }
-        authorize_state = authorize_request.dict()
-        self._redis_client.set("authorize_" + session_key, json.dumps(authorize_state))
+        self._redis_client.set("authorize_" + session_key, json.dumps(authorize_request.dict()))
+
+        scopes = authorize_request.scope.split(" ")
         if "identities" in scopes:
             template_context = {
                 "layout": "layout.html",
@@ -106,10 +99,9 @@ class OidcService:
             )
             return JSONResponse({"redirect_url": redirect_with_error})
 
-        client_public_key_path = self._get_pyop_provider_client_secret_path(
+        client_public_key = self._pyop_provider.get_client_public_key(
             authorize_state["client_id"]
         )
-        client_public_key = load_jwk(client_public_key_path)
 
         userinfo = self._jwt_service.create_jwe(
             client_public_key, {"signed_userinfo": resp.json()["signed_userinfo"]}
@@ -153,13 +145,8 @@ class OidcService:
 
         authorize_state = json.loads(authorize_state.decode("utf-8"))
 
-        client_public_key_path = self._get_pyop_provider_client_secret_path(
+        client_public_key = self._pyop_provider.get_client_public_key(
             authorize_state["client_id"]
-        )
-        client_public_key = load_jwk(client_public_key_path)
-
-        userinfo = self._jwt_service.create_jwe(
-            client_public_key, {"signed_userinfo": signed_userinfo}
         )
 
         # authorize client
@@ -167,21 +154,19 @@ class OidcService:
             urlencode(authorize_state), request.headers
         )
         authorize_response = self._pyop_provider.authorize(pyop_authorize_request, "_")
-        # sub = self._pyop_provider.authz_state.get_subject_identifier("public", "_")
-        # print(sub)
-        # access_token: AccessToken = self._pyop_provider.authz_state.create_access_token(
-        #     AuthorizationRequest(**authorize_state), sub, user_info=userinfo)
-        # access_token = secrets.token_urlsafe(96)[:64]
+
+        userinfo = self._jwt_service.create_jwe(
+            client_public_key, {"signed_userinfo": signed_userinfo}
+        )
 
         self._redis_client.set("userinfo_" + authorize_response["code"], userinfo)
-
-        # code = secrets.token_urlsafe(96)[:64]
-        # self._redis_client.set("access_token_" + authorize_response["code"], access_token)
 
         redirect_url = (
             authorize_state["redirect_uri"]
             + "?"
-            + urlencode({"state": authorize_state["state"], "code": authorize_response["code"]})
+            + urlencode(
+                {"state": authorize_state["state"], "code": authorize_response["code"]}
+            )
         )
         return Response(json.dumps({"redirect_url": redirect_url}))
 
@@ -212,36 +197,34 @@ class OidcService:
         return JSONResponse(response.json())
 
     def token(self, token_request: TokenRequest, request: Request) -> Response:
-        test_token_response = self._pyop_provider.handle_token_request(token_request.query_string, request.headers)
+        token_response = self._pyop_provider.handle_token_request(
+            token_request.query_string, request.headers
+        )
+
+        # bind userinfo to token
         userinfo = self._redis_client.get("userinfo_" + token_request.code)
         self._redis_client.delete("userinfo_" + token_request.code)
-        self._redis_client.set("userinfo_" + test_token_response["access_token"], userinfo)
-        print("token response: \n", test_token_response)
+        self._redis_client.set("userinfo_" + token_response["access_token"], userinfo)
 
-        return test_token_response
-        # access_token = self._redis_client.get("access_token_" + token_request.code)
-        # if access_token is None:
-        #     raise RuntimeError("Invalid code")
-        #
-        # client_public_key_path = self._get_pyop_provider_client_secret_path(
-        #     token_request.client_id
-        # )
-        # client_public_key = load_jwk(client_public_key_path)
-        #
-        # id_token = self._jwt_service.create_jwe(client_public_key, {})
-        # return JSONResponse(
-        #     {
-        #         "access_token": access_token.decode("utf-8"),
-        #         "id_token": id_token,
-        #         "token_type": "Bearer",
-        #         "expires_in": 60 * 5,
-        #     }
-        # )
+        return token_response
 
     def userinfo(self, request: Request) -> Response:
-        access_token = request.headers["Authorization"].split(" ")[1]
-        print("from userinfo request:\n", access_token)
+        access_token = self._pyop_provider.extract_bearer_token_from_http_request(
+            authz_header=request.headers.get("Authorization")
+        )
+
+        if access_token is None:
+            # access denied
+            return Response(status_code=401)
+
+        access_token_active = self._pyop_provider.introspect_access_token(access_token)
+        if not access_token_active:
+            return Response(status_code=401)
+
         userinfo = self._redis_client.get("userinfo_" + access_token)
+        if userinfo is None:
+            return Response(status_code=401)
+
         return Response(content=userinfo, media_type="application/jwt")
 
     def get_jwks(self) -> JSONResponse:
@@ -251,8 +234,3 @@ class OidcService:
         return JSONResponse(
             jsonable_encoder(self._pyop_provider.configuration_information)
         )
-
-    def _get_pyop_provider_client_secret_path(self, client_id: str) -> str:
-        # Acts like a get data from database
-        client = self._pyop_provider.clients[client_id]
-        return client["client_public_key_path"]

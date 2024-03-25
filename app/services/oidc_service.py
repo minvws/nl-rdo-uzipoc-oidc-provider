@@ -40,7 +40,9 @@ class OidcService:
         self, request: Request, authorize_request: AuthorizeRequest
     ) -> Response:
         session_key = rand_pass(100)
-        self._redis_client.set("authorize_" + session_key, json.dumps(authorize_request.dict()))
+        self._redis_client.set(
+            "authorize_" + session_key, json.dumps(authorize_request.dict())
+        )
 
         scopes = authorize_request.scope.split(" ")
         if "identities" in scopes:
@@ -102,10 +104,10 @@ class OidcService:
         client_public_key = self._pyop_provider.get_client_public_key(
             authorize_state["client_id"]
         )
-
         userinfo = self._jwt_service.create_jwe(
             client_public_key, {"signed_userinfo": resp.json()["signed_userinfo"]}
         )
+
         access_token = secrets.token_urlsafe(96)[:64]
         self._redis_client.set("userinfo_" + access_token, userinfo)
 
@@ -139,22 +141,19 @@ class OidcService:
         signed_userinfo = body["signed_userinfo"]
         state = body["state"]
 
-        authorize_state = self._redis_client.get("authorize_" + state)
-        if authorize_state is None:
+        authorize_cache = self._redis_client.get("authorize_" + state)
+        if authorize_cache is None:
             raise RuntimeError("Invalid state")
 
-        authorize_state = json.loads(authorize_state.decode("utf-8"))
+        authorize_state = json.loads(authorize_cache.decode("utf-8"))
+
+        authorize_response = self._pyop_provider.authorize_client(
+            authorize_state, request.headers
+        )
 
         client_public_key = self._pyop_provider.get_client_public_key(
             authorize_state["client_id"]
         )
-
-        # authorize client
-        pyop_authorize_request = self._pyop_provider.parse_authentication_request(
-            urlencode(authorize_state), request.headers
-        )
-        authorize_response = self._pyop_provider.authorize(pyop_authorize_request, "_")
-
         userinfo = self._jwt_service.create_jwe(
             client_public_key, {"signed_userinfo": signed_userinfo}
         )

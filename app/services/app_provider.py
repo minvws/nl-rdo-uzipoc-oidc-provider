@@ -1,7 +1,11 @@
 from typing import Any, Optional, Dict
 
+from urllib.parse import urlencode
+
+from starlette.datastructures import Headers
 from pyop.provider import Provider
 from pyop.authz_state import AuthorizationState
+from oic.oic.message import AuthorizationResponse
 
 from pyop.access_token import extract_bearer_token_from_http_request  # type: ignore
 from pyop.exceptions import BearerTokenError  # type: ignore
@@ -10,6 +14,7 @@ from jwkest.jwk import RSAKey
 from jwcrypto.jwk import JWK
 
 from app.utils import load_jwk
+from app.models.authorize_request import AuthorizeRequest
 
 
 class AppProvider(Provider):
@@ -23,7 +28,6 @@ class AppProvider(Provider):
         *,
         id_token_lifetime=3600,
         extra_scopes=None,
-        # trusted_certificates_directory=None,
     ):
         super().__init__(
             signing_key,
@@ -34,6 +38,17 @@ class AppProvider(Provider):
             id_token_lifetime=id_token_lifetime,
             extra_scopes=extra_scopes,
         )
+
+    def authorize_client(
+        self, authorize_request: AuthorizeRequest, headers: Headers
+    ) -> AuthorizationResponse:
+        """
+        Wrapper method to handle pyop authorization. The client id is an placeholder
+        """
+        pyop_authorization_request = self.parse_authentication_request(
+            urlencode(authorize_request), headers
+        )
+        return self.authorize(pyop_authorization_request, "_")
 
     def extract_bearer_token_from_http_request(
         self, parsed_request: Optional[Any] = None, authz_header: Optional[Any] = None
@@ -58,4 +73,3 @@ class AppProvider(Provider):
     def get_client_public_key(self, client_id: str) -> JWK:
         client = self.clients[client_id]
         return load_jwk(client["client_public_key_path"])
-

@@ -1,12 +1,13 @@
 from typing import Any, Optional, Dict
 
 from urllib.parse import urlencode
+import logging
 
 from starlette.datastructures import Headers
-from pyop.provider import Provider
-from pyop.authz_state import AuthorizationState
 from oic.oic.message import AuthorizationResponse
 
+from pyop.provider import Provider
+from pyop.authz_state import AuthorizationState
 from pyop.access_token import extract_bearer_token_from_http_request  # type: ignore
 from pyop.exceptions import BearerTokenError  # type: ignore
 
@@ -16,8 +17,11 @@ from jwcrypto.jwk import JWK
 from app.utils import load_jwk
 from app.models.authorize_request import AuthorizeRequest
 
+logger = logging.getLogger(__name__)
+
 
 class AppProvider(Provider):
+    # pylint: disable=useless-parent-delegation
     def __init__(  # type: ignore
         self,
         signing_key: RSAKey,
@@ -46,7 +50,7 @@ class AppProvider(Provider):
         Wrapper method to handle pyop authorization. The client id is an placeholder
         """
         pyop_authorization_request = self.parse_authentication_request(
-            urlencode(authorize_request), headers
+            urlencode(authorize_request), headers  # type: ignore
         )
         return self.authorize(pyop_authorization_request, "_")
 
@@ -59,6 +63,7 @@ class AppProvider(Provider):
         try:
             return extract_bearer_token_from_http_request(parsed_request, authz_header)
         except BearerTokenError as _e:
+            logger.exception(_e)
             return None
 
     def introspect_access_token(self, access_token: str) -> bool:

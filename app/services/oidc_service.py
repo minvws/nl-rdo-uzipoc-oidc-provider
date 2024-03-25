@@ -1,5 +1,4 @@
 import json
-import secrets
 from typing import Dict, Optional, Any
 from urllib.parse import urlencode
 from fastapi import Request
@@ -68,16 +67,17 @@ class OidcService:
             },
         )
 
-    def submit(self, body: Dict[str, Any], request: Request) -> Response:
+    def submit_identities(self, body: Dict[str, Any], request: Request) -> Response:
         if "bsn" not in body or "state" not in body:
             return Response(status_code=400)
 
         bsn = body["bsn"]
         state = body["state"]
-        authorize_state = self._redis_client.get("authorize_" + state)
-        if authorize_state is None:
+
+        authorize_cache = self._redis_client.get("authorize_" + state)
+        if authorize_cache is None:
             raise RuntimeError("Invalid state")
-        authorize_state = json.loads(authorize_state.decode("utf-8"))
+        authorize_state = json.loads(authorize_cache.decode("utf-8"))
 
         resp = requests.get(
             self._register_base_url + "/signed-userinfo?bsn=" + bsn,
@@ -101,42 +101,30 @@ class OidcService:
             )
             return JSONResponse({"redirect_url": redirect_with_error})
 
+        authorize_response = self._pyop_provider.authorize_client(
+            authorize_state, request.headers
+        )
+        redirect_url = (
+            authorize_state["redirect_uri"]
+            + "?"
+            + urlencode(
+                {"state": authorize_state["state"], "code": authorize_response["code"]}
+            )
+        )
+
         client_public_key = self._pyop_provider.get_client_public_key(
             authorize_state["client_id"]
         )
         userinfo = self._jwt_service.create_jwe(
             client_public_key, {"signed_userinfo": resp.json()["signed_userinfo"]}
         )
+        self._redis_client.set("userinfo_" + authorize_response["code"], userinfo)
 
-        access_token = secrets.token_urlsafe(96)[:64]
-        self._redis_client.set("userinfo_" + access_token, userinfo)
-
-        code = secrets.token_urlsafe(96)[:64]
-
-        py_op_authorize_request = self._pyop_provider.parse_authentication_request(
-            authorize_state, request.headers
-        )
-        authorize_response = self._pyop_provider.authorize(py_op_authorize_request, "_")
-        print("authorzie_respons\n", authorize_response)
-
-        self._redis_client.set("access_token_" + code, access_token)
-
-        redirect_url = (
-            authorize_state["redirect_uri"]
-            + "?"
-            + urlencode({"state": authorize_state["state"], "code": code})
-        )
         return Response(json.dumps({"redirect_url": redirect_url}))
 
-    def handle_submit(self, body: Dict[str, Any], request: Request) -> Response:
-        if "login_hint" not in body:
-            return Response(status_code=400)
-
+    def submit_zsm(self, body: Dict[str, Any], request: Request) -> Response:
         if "signed_userinfo" not in body or "state" not in body:
             return Response(status_code=400)
-
-        if body["login_hint"] == "identities":
-            return self.submit(body, request)
 
         signed_userinfo = body["signed_userinfo"]
         state = body["state"]
@@ -151,15 +139,6 @@ class OidcService:
             authorize_state, request.headers
         )
 
-        client_public_key = self._pyop_provider.get_client_public_key(
-            authorize_state["client_id"]
-        )
-        userinfo = self._jwt_service.create_jwe(
-            client_public_key, {"signed_userinfo": signed_userinfo}
-        )
-
-        self._redis_client.set("userinfo_" + authorize_response["code"], userinfo)
-
         redirect_url = (
             authorize_state["redirect_uri"]
             + "?"
@@ -167,7 +146,25 @@ class OidcService:
                 {"state": authorize_state["state"], "code": authorize_response["code"]}
             )
         )
+
+        client_public_key = self._pyop_provider.get_client_public_key(
+            authorize_state["client_id"]
+        )
+        userinfo = self._jwt_service.create_jwe(
+            client_public_key, {"signed_userinfo": signed_userinfo}
+        )
+        self._redis_client.set("userinfo_" + authorize_response["code"], userinfo)
+
         return Response(json.dumps({"redirect_url": redirect_url}))
+
+    def handle_submit(self, body: Dict[str, Any], request: Request) -> Response:
+        if "login_hint" not in body:
+            return Response(status_code=400)
+
+        if body["login_hint"] == "identities":
+            return self.submit_identities(body, request)
+
+        return self.submit_zsm(body, request)
 
     def get_userinfo_token_from_register(
         self, bsn: str, userinfo_validity_in_seconds: Optional[str] = None
@@ -199,11 +196,14 @@ class OidcService:
         token_response = self._pyop_provider.handle_token_request(
             token_request.query_string, request.headers
         )
-
+        userinfo_cache = self._redis_client.get("userinfo_" + token_request.code)
+        if userinfo_cache is None:
+            return Response(status_code=401)
         # bind userinfo to token
-        userinfo = self._redis_client.get("userinfo_" + token_request.code)
         self._redis_client.delete("userinfo_" + token_request.code)
-        self._redis_client.set("userinfo_" + token_response["access_token"], userinfo)
+        self._redis_client.set(
+            "userinfo_" + token_response["access_token"], userinfo_cache.decode("utf-8")
+        )
 
         return token_response
 

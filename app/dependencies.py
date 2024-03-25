@@ -1,5 +1,4 @@
 from configparser import ConfigParser
-from pyop.provider import Provider
 from pyop.authz_state import AuthorizationState
 from pyop.subject_identifier import HashBasedSubjectIdentifierFactory
 from pyop.userinfo import Userinfo

@@ -13,6 +13,7 @@ from app.constants import (
 from app.services.jwt_service import JwtService
 from app.services.oidc_service import OidcService
 from app.services.template_service import TemplateService
+from app.services.app_provider import AppProvider
 from app.services.vite_manifest_service import ViteManifestService
 from app.storage.redis.redis_client import create_redis_client
 from app.utils import (
@@ -71,7 +72,7 @@ jwt_service_ = JwtService(
     crt_kid=kid_from_certificate(jwt_crt_content),
 )
 
-pyop_provider = Provider(
+pyop_provider = AppProvider(
     signing_key=load_rsa_key_from_path(signing_key, signing_key_cert),
     configuration_information=pyop_configuration_information_callable(
         issuer,

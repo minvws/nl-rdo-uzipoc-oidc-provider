@@ -5,6 +5,7 @@
         "redirect_uris": [
             "http://localhost:8001/login/oidc/callback"
         ],
-        "client_public_key_path": "secrets/clients/nl-uzi-login-controller.crt"
+        "client_public_key_path": "secrets/clients/nl-uzi-login-controller.crt",
+        "token_endpoint_auth_method": "none"
     }
 }

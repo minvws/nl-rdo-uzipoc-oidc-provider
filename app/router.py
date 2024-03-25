@@ -26,7 +26,7 @@ async def submit(
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
     posted = await request.json()
-    return oidc_service.handle_submit(posted)
+    return oidc_service.handle_submit(posted, request)
 
 
 @router.post("/token")
@@ -37,7 +37,7 @@ async def token(
     token_request = TokenRequest.from_body_query_string(
         (await request.body()).decode("utf-8")
     )
-    return oidc_service.token(token_request)
+    return oidc_service.token(token_request, request)
 
 
 @router.get("/userinfo")

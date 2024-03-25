@@ -14,10 +14,10 @@ router = APIRouter()
 @router.get("/authorize")
 async def authorize(
     request: Request,
-    authrize_request: AuthorizeRequest = Depends(),
+    authorize_request: AuthorizeRequest = Depends(),
     oidc_service: OidcService = Depends(lambda: oidc_service_),
 ) -> Response:
-    return oidc_service.authorize(request, authrize_request)
+    return oidc_service.authorize(request, authorize_request)
 
 
 @router.post("/submit")

@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Dict, Optional, Any
 from urllib.parse import urlencode
 from fastapi import Request
@@ -14,6 +15,8 @@ from app.services.app_provider import AppProvider
 from app.utils import rand_pass
 from app.models.authorize_request import AuthorizeRequest
 from app.models.token_request import TokenRequest
+
+logger = logging.getLogger(__name__)
 
 
 class OidcService:
@@ -99,6 +102,7 @@ class OidcService:
                     }
                 )
             )
+            logger.error("Unable to get signed-userinfo from register: %s", resp.text)
             return JSONResponse({"redirect_url": redirect_with_error})
 
         authorize_response = self._pyop_provider.authorize_client(

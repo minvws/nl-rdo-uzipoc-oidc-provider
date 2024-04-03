@@ -18,6 +18,7 @@ from app.models.token_request import TokenRequest
 
 logger = logging.getLogger(__name__)
 
+
 class OidcService:
     def __init__(
         self,

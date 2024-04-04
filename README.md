@@ -13,3 +13,7 @@ make setup
 ```bash
 make run
 ```
+
+### Docker containers
+Docker containers and their configurations are meant to be used for development purposes only. And not meant to be used in a production setup.
+

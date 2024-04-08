@@ -52,7 +52,7 @@ exceptiongroup==1.2.0
     # via pytest
 fastapi==0.110.0
     # via app (setup.py)
-future==0.18.3
+future==1.0.0
     # via pyjwkest
 gitdb==4.0.11
     # via gitpython

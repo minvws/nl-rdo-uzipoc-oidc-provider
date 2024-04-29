@@ -46,7 +46,7 @@ defusedxml==0.7.1
     # via oic
 deprecated==1.2.14
     # via jwcrypto
-dill==0.3.6
+dill==0.3.8
     # via pylint
 exceptiongroup==1.2.0
     # via pytest

@@ -22,7 +22,9 @@ from app.utils import (
     json_from_file,
     load_rsa_key_from_path,
     pyop_configuration_information_callable,
+    clients_from_json,
 )
+from app.validators.token_authentication_validator import TokenAuthenticationValidator
 
 config = ConfigParser()
 config.read("app.conf")
@@ -48,7 +50,7 @@ sub_hash_salt = config.get("oidc", "subject_id_hash_salt")
 
 subject_id_factory = HashBasedSubjectIdentifierFactory(sub_hash_salt)
 authz_state = AuthorizationState(subject_id_factory)
-clients = json_from_file(config.get("app", "clients_path"))
+clients = clients_from_json(config.get("app", "clients_path"))
 
 # Templates config
 vite_manifest = json_from_file(config.get("templates", "vite_manifest_path"))
@@ -86,6 +88,10 @@ pyop_provider = AppProvider(
     userinfo=Userinfo({"_": {}}),
 )
 
+token_authentication_validator = TokenAuthenticationValidator(
+    oidc_configuration_info=pyop_provider.configuration_information
+)
+
 oidc_service_ = OidcService(
     redis_client=_redis_client,
     jwt_service=jwt_service_,
@@ -96,4 +102,5 @@ oidc_service_ = OidcService(
     identities_page_sidebar_template=config.get(
         "templates", "identities_page_sidebar_template", fallback=None
     ),
+    token_authentication_validator=token_authentication_validator,
 )

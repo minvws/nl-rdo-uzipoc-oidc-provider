@@ -154,7 +154,7 @@ tomli==2.0.1
     #   mypy
     #   pylint
     #   pytest
-tomlkit==0.11.6
+tomlkit==0.12.4
     # via pylint
 types-pyopenssl==24.0.0.20240311
     # via types-redis

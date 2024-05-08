@@ -15,6 +15,7 @@ from app.services.app_provider import AppProvider
 from app.utils import rand_pass
 from app.models.authorize_request import AuthorizeRequest
 from app.models.token_request import TokenRequest
+from app.validators.token_authentication_validator import TokenAuthenticationValidator
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ class OidcService:
         pyop_provider: AppProvider,
         template_service: TemplateService,
         identities_page_sidebar_template: Optional[str],
+        token_authentication_validator: TokenAuthenticationValidator,
     ):
         self._redis_client = redis_client
         self._jwt_service = jwt_service
@@ -37,6 +39,7 @@ class OidcService:
         self._pyop_provider = pyop_provider
         self._templates = template_service.templates
         self.identities_page_sidebar_template = identities_page_sidebar_template
+        self._token_authentication_validator = token_authentication_validator
 
     def authorize(
         self, request: Request, authorize_request: AuthorizeRequest
@@ -197,6 +200,17 @@ class OidcService:
         return JSONResponse(response.json())
 
     def token(self, token_request: TokenRequest, request: Request) -> Response:
+        client = self._pyop_provider.clients.get(token_request.client_id)
+        if not client:
+            return Response(status_code=404)
+
+        self._token_authentication_validator.validate_client_authentication(
+            client_id=token_request.client_id,
+            client=client,
+            client_assertion_jwt=token_request.client_assertion,
+            client_assertion_type=token_request.client_assertion_type,
+        )
+
         token_response = self._pyop_provider.handle_token_request(
             token_request.query_string, request.headers
         )

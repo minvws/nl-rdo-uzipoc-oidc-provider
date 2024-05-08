@@ -1,7 +1,7 @@
 import base64
 import secrets
 from os import path
-from typing import Union, Any, List
+from typing import Union, Any, List, Dict
 import json
 from Cryptodome.Hash import SHA256
 from Cryptodome.IO import PEM
@@ -74,3 +74,11 @@ def rand_pass(size: int) -> str:
 
 def json_from_file(filepath: str) -> Any:
     return json.loads(file_content_raise_if_none(filepath))
+
+
+def clients_from_json(filepath: str) -> Dict[str, Any]:
+    clients: Dict[str, Any] = json_from_file(filepath)
+    for client in clients.values():
+        client["public_key"] = load_jwk(client["client_public_key_path"])
+
+    return clients

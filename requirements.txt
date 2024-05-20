@@ -50,7 +50,7 @@ dill==0.3.8
     # via pylint
 exceptiongroup==1.2.0
     # via pytest
-fastapi==0.110.0
+fastapi==0.111.0
     # via app (setup.py)
 future==1.0.0
     # via pyjwkest
